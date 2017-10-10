@@ -31,8 +31,10 @@ class API::V1::UploadController < ApplicationController
       if dsl && dsl.extract                    
         success_upload(conditions)
       else          
-        invalid_params
-      end     
+        params_nil
+      end
+    else
+      params_invalid     
     end    
   end
   
@@ -69,12 +71,20 @@ class API::V1::UploadController < ApplicationController
     }, status: 200, content_type: 'application/json'
   end
   
- def invalid_params
+ def params_invalid
     render json: {
       status: 4000,
       error: :unprocessable_entity,
       message: 'Cell info not uploaded.  device_id, cellinfo, location, ping, timestamp is required.'
     }, status: 4000, content_type: 'application/json'
+  end
+  
+  def params_nil
+    render json: {
+      status: 422,
+      error: :unprocessable_entity,
+      message: 'Cell info not uploaded.  device_id, cellinfo, location, ping, timestamp is required.'
+    }, status: 422, content_type: 'application/json'
   end
 
   def cell_info_params
