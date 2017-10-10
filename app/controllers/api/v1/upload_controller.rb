@@ -28,16 +28,24 @@ class API::V1::UploadController < ApplicationController
       
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])
       if dsl && dsl.extract       
-        #json_response(, :created)
-        head :no_content
+        json_response(success_upload(conditions), :success)
+        #head :no_content
         #format.json{ render :json => {status: "success", code: 200, message: "ceated cell upload for device_id #{conditions[:device_id]}"}}
       end
     else
       #format.json{ render :json => {status: "error", code: 422, message: "device_id, cellinfo, location, ping, timestamp is required."}}      
-      json_response(unprocessable, :error)
+      json_response(invalid_params, :error)
     end
     
   end
+  def success_upload(conditions)
+    render json: {
+      status: "sucess",
+      code: 200,
+      message: "ceated cell upload for device_id #{conditions[:device_id]}"
+    }, status: 200
+  end
+
 
   # GET /cell_info/:id
   def show
