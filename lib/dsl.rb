@@ -1,10 +1,11 @@
 module CellInfo
   class Dsl
     attr_accessor :device_id, :location, :cell_ping_data, :cell_ping_object, :cell_info_object, :cell_location_object
-    def initialize(device_id, cell_info_data, cell_location_data, cell_ping_data)
+    def initialize(device_id, cell_info_data, cell_location_data, cell_ping_data, cell_timestamp)
       @device_id = device_id
       @location = cell_location_data
       @cell_ping_data = cell_ping_data
+      @timestamp = cell_timestamp
       @cell_ping_object = JSON.parse(cell_ping_data, object_class: OpenStruct)
       @cell_info_object = JSON.parse(cell_info_data, object_class: OpenStruct)
       @cell_location_object = JSON.parse(cell_location_data, object_class: OpenStruct)
