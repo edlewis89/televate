@@ -1,0 +1,2 @@
+class CellLocation < ApplicationRecord
+end

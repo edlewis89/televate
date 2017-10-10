@@ -1,0 +1,2 @@
+class CellIdentityLte < ApplicationRecord 
+end

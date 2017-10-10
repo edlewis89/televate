@@ -1,0 +1,2 @@
+class CellIdentityCdma < ApplicationRecord
+end

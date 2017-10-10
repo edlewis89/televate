@@ -1,0 +1,2 @@
+class CellSignalStrengthGsm < ApplicationRecord
+end

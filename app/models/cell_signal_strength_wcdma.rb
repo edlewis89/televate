@@ -1,0 +1,2 @@
+class CellSignalStrengthWcdma < ApplicationRecord
+end

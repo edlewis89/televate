@@ -1,0 +1,2 @@
+class CellSignalStrengthLte < ApplicationRecord
+end

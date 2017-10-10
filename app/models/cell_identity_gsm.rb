@@ -1,0 +1,2 @@
+class CellIdentityGsm < ApplicationRecord
+end

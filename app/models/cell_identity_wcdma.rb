@@ -1,0 +1,2 @@
+class CellIdentityWcdma < ApplicationRecord
+end
