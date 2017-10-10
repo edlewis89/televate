@@ -27,8 +27,7 @@ class API::V1::UploadController < ApplicationController
       conditions[:timestamp] = params[:timestamp] unless params[:timestamp].blank?
       
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])
-      if dsl
-        dsl.extract
+      if dsl && dsl.extract       
         json_response(@cell_info, :created)
       end
     else
