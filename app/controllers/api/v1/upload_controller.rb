@@ -18,7 +18,7 @@ class API::V1::UploadController < ApplicationController
     # columns 4: timestamp
     
     if cell_info_params
-      puts "Creating cell info ... "
+      #puts "Creating cell info ... "
       conditions = {}
       conditions[:device_id] = params[:device_id] unless params[:device_id].blank?
       conditions[:cellinfo] = params[:cellinfo] unless params[:cellinfo].blank?
@@ -29,10 +29,10 @@ class API::V1::UploadController < ApplicationController
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])
       if dsl && dsl.extract       
         #json_response(@cell_info, :created)
-        render json: {status: "success", code: 200, message: "ceated cell upload for device_id #{conditions[:device_id]}"}
+        json_response( {status: "success", code: 200, message: "ceated cell upload for device_id #{conditions[:device_id]}"})
       end
     else
-      render json: {status: "error", code: 422, message: "device_id, cellinfo, location, ping, timestamp is required."}
+      json_response({status: "error", code: 422, message: "device_id, cellinfo, location, ping, timestamp is required."})
     end
     
   end
