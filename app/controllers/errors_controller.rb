@@ -4,7 +4,7 @@ class ErrorsController < ApplicationController
       status: 404,
       error: :not_found,
       message: 'Where did the 403 errors go'
-    }, status: 404
+    }, status: 404, content_type: 'application/json'
   end
 
   def internal_server_error
@@ -12,7 +12,7 @@ class ErrorsController < ApplicationController
       status: 500,
       error: :internal_server_error,
       message: 'Houston we have a problem'
-    }, status: 500
+    }, status: 500, content_type: 'application/json'
   end
   
   def unprocessable
@@ -20,13 +20,13 @@ class ErrorsController < ApplicationController
       status: 422,
       error: :unprocessable_entity,
       message: 'Unprocessable cell info.  Invalid authenticity token'
-    }, status: 422
+    }, status: 422, content_type: 'application/json'
   end
   def invalid_params
     render json: {
       status: 4000,
       error: :unprocessable_entity,
       message: 'Cell info not uploaded.  device_id, cellinfo, location, ping, timestamp is required.'
-    }, status: 4000
+    }, status: 4000, content_type: 'application/json'
   end
 end
