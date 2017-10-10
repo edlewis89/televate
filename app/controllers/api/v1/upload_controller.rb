@@ -34,7 +34,10 @@ class API::V1::UploadController < ApplicationController
       end
     else
       #format.json{ render :json => {status: "error", code: 422, message: "device_id, cellinfo, location, ping, timestamp is required."}}      
-      json_response(invalid_params, :error)
+      format.json { 
+        render :plain => {success:false}.to_json, status: 422, content_type: 'application/json'
+      }
+      #json_response(invalid_params, :error)
     end
     
   end
