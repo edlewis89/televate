@@ -9,8 +9,8 @@ class API::V1::UploadController < ApplicationController
     # json_response(@cell_info)
   end
 
-  # POST /upload
-  def process
+  # POST /create
+  def create
     #puts "Creating cell info ..."
     # columns 1: device_id
     # columns 2: cellInfo

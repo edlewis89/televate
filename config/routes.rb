@@ -8,8 +8,8 @@ Rails.application.routes.draw do
   #We can remove the duplication of “api” by setting a blank path:
   namespace :api, :defaults => {:format => :json} do
     namespace :v1 do
-      #resources :upload, only: [:create]
-      match 'upload', to: 'upload#process', via: [:post]
+      resources :upload, only: [:create]
+      #match 'upload', to: 'upload#process', via: [:post]
     end
   end
 end
