@@ -10,7 +10,7 @@ class API::V1::UploadController < ApplicationController
   end
 
   # POST /upload
-  def create
+  def process
     #puts "Creating cell info ..."
     # columns 1: device_id
     # columns 2: cellInfo
