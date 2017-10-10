@@ -27,16 +27,26 @@ class API::V1::UploadController < ApplicationController
       conditions[:timestamp] = params[:timestamp] unless params[:timestamp].blank?
       
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])
-      if dsl && dsl.extract       
+      respond_to do |format|
+        if dsl && dsl.extract       
+       
+          #format.html { redirect_to @post, notice: 'Post was successfully created.' }
+          #format.json { render :show, status: :created, location: @post }
+          head :no_content
+        else
+          #format.html { render :new }
+          format.json { invalid_params }
+        end
+      end        
+        #json_response(success_upload(conditions), :success)
+        #head :no_content
+      #else
+      #  head :no_content
         
-        json_response(success_upload(conditions), :success)
-      else
-        json_response(invalid_params, :error)
-        
-      end
-    else
-      
-      json_response(invalid_params, :error)
+      #end
+    #else
+      #format.json { render json: @post.errors, status: :unprocessable_entity }
+      #json_response(invalid_params, :error)
     end
     
   end
@@ -74,7 +84,7 @@ class API::V1::UploadController < ApplicationController
     }, status: 200, content_type: 'application/json'
   end
   
-  def invalid_params
+ def invalid_params
     render json: {
       status: 4000,
       error: :unprocessable_entity,
