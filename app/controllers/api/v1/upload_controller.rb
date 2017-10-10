@@ -67,7 +67,7 @@ class API::V1::UploadController < ApplicationController
 
   def cell_info_params
     # whitelist params
-    params.permit(:device_id, :cellinfo, :location, :ping, :timestamp, :format)
+    params.permit(:device_id, :cellinfo, :location, :ping, :timestamp)
   end
 
   def set_cell_info
