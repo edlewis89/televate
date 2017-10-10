@@ -35,7 +35,7 @@ class API::V1::UploadController < ApplicationController
           head :no_content
         else
           #format.html { render :new }
-          json_response(invalid_params)
+          invalid_params
         end
              
         #json_response(success_upload(conditions), :success)
