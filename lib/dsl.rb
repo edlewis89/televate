@@ -51,6 +51,7 @@ module CellInfo
     end 
     
     def extract
+      puts "DSL::extracting cell info ... "
       c = nil
       c = Cell.new({:cell_device_id => @device_id}) unless @device_id.nil? || @device_id.blank?    
       if c && c.valid? && !cell_info_size.nil?             

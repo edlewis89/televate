@@ -5,8 +5,8 @@ class API::V1::UploadController < ApplicationController
   
   # GET /cell_info
   def index
-    # @cell_info = CellInfo.all
-    # json_response(@cell_info)
+    @cell = Cell.all
+    json_response(@cell)
   end
 
   # POST /create
@@ -18,7 +18,7 @@ class API::V1::UploadController < ApplicationController
     # columns 4: timestamp
     
     if cell_info_params
-      #puts "Creating cell info ... "
+      
       conditions = {}
       conditions[:device_id] = params[:device_id] unless params[:device_id].blank?
       conditions[:cellinfo] = params[:cellinfo] unless params[:cellinfo].blank?
@@ -28,6 +28,7 @@ class API::V1::UploadController < ApplicationController
       
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])
       if dsl && dsl.extract       
+        
         json_response(success_upload(conditions), :success)
         
       end
@@ -37,33 +38,39 @@ class API::V1::UploadController < ApplicationController
     end
     
   end
+  
+
+
+  # GET /cell/:id
+  def show
+    set_cell_info
+    json_response(@cell)
+  end
+
+  # PUT /cell/:id
+  def update
+    set_cell_info
+    @cell.update(cell_info_params)
+    head :no_content
+  end
+
+  # DELETE /cell/:id
+  def destroy
+    set_cell_info
+    @cell.destroy
+    head :no_content
+  end
+
+  private
+
   def success_upload(conditions)
     render json: {
       status: "sucess",
       code: 200,
-      message: "ceated cell upload for device_id #{conditions[:device_id]}"
+      message: "ceated cell upload for device_id #{conditions[:device_id]}",
+      head: :no_content
     }, status: 200, content_type: 'application/json'
   end
-
-
-  # GET /cell_info/:id
-  def show
-    # json_response(@cell_info)
-  end
-
-  # PUT /cell_info/:id
-  def update
-    # @cell_info.update(cell_info_params)
-    # head :no_content
-  end
-
-  # DELETE /cell_info/:id
-  def destroy
-    # @cell_info.destroy
-    # head :no_content
-  end
-
-  private
 
   def cell_info_params
     # whitelist params
@@ -71,7 +78,7 @@ class API::V1::UploadController < ApplicationController
   end
 
   def set_cell_info
-    # @cell_info = CellInfo.find(params[:id])
+    @cell = Cell.find(params[:id])
   end
   
 end
