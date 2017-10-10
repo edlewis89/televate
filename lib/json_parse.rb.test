@@ -238,8 +238,8 @@ end
   # puts cellinfo.send('mCellSignalStrengthWcma')
   # puts cellinfo.send('mCellSignalStrengthCdma')
 # end
-dsl = CellInfo::Dsl.new('11234', cellinfo)
-dsl.extract
+#dsl = CellInfo::Dsl.new('11234', cellinfo, '', '')
+#dsl.extract
 
 
 
