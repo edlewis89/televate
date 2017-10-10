@@ -19,9 +19,11 @@ class API::V1::UploadController < ApplicationController
     
     if cell_info_params
       puts "Creating cell info ... "
-      #dsl = CellInfo::Dsl.new(params[:device_id], params[:cellinfo], params[:location], params[:ping], params[:timestamp])
-      #dsl.extract
-      #json_response(@cell_info, :created)
+      dsl = CellInfo::Dsl.new(params[:device_id], params[:cellinfo], params[:location], params[:ping], params[:timestamp])
+      if dsl
+        dsl.extract
+        json_response(@cell_info, :created)
+      end
     else
       render json: {status: "error", code: 4000, message: "device_id, cellinfo, location, ping, timestamp is required."}
     end
