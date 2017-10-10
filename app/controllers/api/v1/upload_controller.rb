@@ -30,6 +30,8 @@ class API::V1::UploadController < ApplicationController
       if dsl && dsl.extract       
         
         json_response(success_upload(conditions), :success)
+      else
+        json_response(invalid_params, :error)
         
       end
     else
