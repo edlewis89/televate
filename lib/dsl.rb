@@ -53,7 +53,7 @@ module CellInfo
     def extract
       c = nil
       c = Cell.new({:cell_device_id => @device_id}) unless @device_id.nil? || @device_id.blank?    
-      if c && c.valid? && cell_info_size > 1             
+      if c && c.valid? && !cell_info_size.nil?             
         for i in 0..cell_info_size - 1 
           cell_ping = Ping.new(self.cell_ping(i).to_h)
           cell_location = CellLocation.new(self.cell_location(i).to_h)
