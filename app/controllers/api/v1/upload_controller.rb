@@ -28,27 +28,12 @@ class API::V1::UploadController < ApplicationController
       
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])
       
-        if dsl && dsl.extract       
-       
-          #format.html { redirect_to @post, notice: 'Post was successfully created.' }
-          #format.json { render :show, status: :created, location: @post }
-          head :no_content
-        else
-          #format.html { render :new }
-          invalid_params
-        end
-             
-        #json_response(success_upload(conditions), :success)
-        #head :no_content
-      #else
-      #  head :no_content
-        
-      #end
-    #else
-      #format.json { render json: @post.errors, status: :unprocessable_entity }
-      #json_response(invalid_params, :error)
-    end
-    
+      if dsl && dsl.extract                    
+        success_upload(conditions)
+      else          
+        invalid_params
+      end     
+    end    
   end
   
 
