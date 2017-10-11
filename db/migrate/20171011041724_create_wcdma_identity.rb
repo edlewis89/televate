@@ -1,7 +1,7 @@
-class CreateCellIdentityWcdmas < ActiveRecord::Migration[5.1]
+class CreateWcdmaIdentity < ActiveRecord::Migration[5.1]
   def change
-    create_table :cell_identity_wcdmas do |t|
-      t.belongs_to :metric, index: { unique: true }, foreign_key: true
+    create_table :wcdma_identities do |t|
+      #t.belongs_to :metric, index: { unique: true }, foreign_key: true
       t.integer :mcid
       t.integer :mmcc
       t.integer :mmnc

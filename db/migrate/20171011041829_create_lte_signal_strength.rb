@@ -1,7 +1,6 @@
-class CreateCellSignalStrengthLtes < ActiveRecord::Migration[5.1]
+class CreateLteSignalStrength < ActiveRecord::Migration[5.1]
   def change
-    create_table :cell_signal_strength_ltes do |t|
-      t.belongs_to :metric, index: { unique: true }, foreign_key: true
+    create_table :lte_signal_strengths do |t|
       t.integer :mcqi
       t.integer :mrsrp
       t.integer :mrsrqc

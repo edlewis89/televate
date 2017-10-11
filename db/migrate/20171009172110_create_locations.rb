@@ -1,6 +1,6 @@
-class CreateCellLocations < ActiveRecord::Migration[5.1]
+class CreateLocations < ActiveRecord::Migration[5.1]
   def change
-    create_table :cell_locations do |t|
+    create_table :locations do |t|
       t.belongs_to :metric, index: { unique: true }, foreign_key: true
       t.integer :maccuracy
       t.integer :maltitude
