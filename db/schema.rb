@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171009234855) do
+ActiveRecord::Schema.define(version: 20171011042901) do
 
-  create_table "cell_identity_cdmas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "metric_id"
+  create_table "cdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "mcid"
     t.integer "mmcc"
     t.integer "mmnc"
@@ -23,61 +22,23 @@ ActiveRecord::Schema.define(version: 20171009234855) do
     t.integer "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_identity_cdmas_on_metric_id", unique: true
   end
 
-  create_table "cell_identity_gsms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "metric_id"
-    t.integer "mcid"
-    t.integer "mmcc"
-    t.integer "mmnc"
-    t.integer "mlac"
-    t.boolean "mregistered"
-    t.integer "mtimestamp"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_identity_gsms_on_metric_id", unique: true
+  create_table "cdma_identities_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "cdma_identity_id", null: false
+    t.bigint "metric_id", null: false
   end
 
-  create_table "cell_identity_ltes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "metric_id"
-    t.integer "mci"
-    t.integer "mmcc"
-    t.integer "mmnc"
-    t.integer "mpci"
-    t.integer "mtac"
-    t.boolean "mregistered"
-    t.integer "mtimestamp"
+  create_table "cdma_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "bit_error_rate"
+    t.integer "signal_strength"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_identity_ltes_on_metric_id", unique: true
   end
 
-  create_table "cell_identity_wcdmas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "metric_id"
-    t.integer "mcid"
-    t.integer "mmcc"
-    t.integer "mmnc"
-    t.integer "mlac"
-    t.integer "mpsc"
-    t.boolean "mregistered"
-    t.integer "mtimestamp"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_identity_wcdmas_on_metric_id", unique: true
-  end
-
-  create_table "cell_locations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "metric_id"
-    t.integer "maccuracy"
-    t.integer "maltitude"
-    t.integer "mdistance"
-    t.integer "mspeed"
-    t.decimal "mlongitude", precision: 10, scale: 6
-    t.decimal "mlatitude", precision: 10, scale: 6
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_locations_on_metric_id", unique: true
+  create_table "cdma_signal_strengths_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "cdma_signal_strength_id", null: false
+    t.bigint "metric_id", null: false
   end
 
   create_table "cell_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -90,26 +51,72 @@ ActiveRecord::Schema.define(version: 20171009234855) do
     t.index ["metric_id"], name: "index_cell_metrics_on_metric_id", unique: true
   end
 
-  create_table "cell_signal_strength_cdmas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "metric_id"
+  create_table "cells", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "cell_device_id"
+    t.integer "cell_device_rev"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "gsm_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "mcid"
+    t.integer "mmcc"
+    t.integer "mmnc"
+    t.integer "mlac"
+    t.boolean "mregistered"
+    t.integer "mtimestamp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "gsm_identities_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "gsm_identity_id", null: false
+    t.bigint "metric_id", null: false
+  end
+
+  create_table "gsm_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "bit_error_rate"
     t.integer "signal_strength"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_signal_strength_cdmas_on_metric_id", unique: true
   end
 
-  create_table "cell_signal_strength_gsms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "gsm_signal_strengths_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "gsm_signal_strength_id", null: false
+    t.bigint "metric_id", null: false
+  end
+
+  create_table "locations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "metric_id"
-    t.integer "bit_error_rate"
-    t.integer "signal_strength"
+    t.integer "maccuracy"
+    t.integer "maltitude"
+    t.integer "mdistance"
+    t.integer "mspeed"
+    t.decimal "mlongitude", precision: 10, scale: 6
+    t.decimal "mlatitude", precision: 10, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_signal_strength_gsms_on_metric_id", unique: true
+    t.index ["metric_id"], name: "index_locations_on_metric_id", unique: true
   end
 
-  create_table "cell_signal_strength_ltes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "metric_id"
+  create_table "lte_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "mci"
+    t.integer "mmcc"
+    t.integer "mmnc"
+    t.integer "mpci"
+    t.integer "mtac"
+    t.boolean "mregistered"
+    t.integer "mtimestamp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lte_identities_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "lte_identity_id", null: false
+    t.bigint "metric_id", null: false
+  end
+
+  create_table "lte_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "mcqi"
     t.integer "mrsrp"
     t.integer "mrsrqc"
@@ -118,52 +125,34 @@ ActiveRecord::Schema.define(version: 20171009234855) do
     t.integer "timing"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_signal_strength_ltes_on_metric_id", unique: true
   end
 
-  create_table "cell_signal_strength_wcdmas", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "metric_id"
-    t.integer "bit_error_rate"
-    t.integer "signal_strength"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_cell_signal_strength_wcdmas_on_metric_id", unique: true
-  end
-
-  create_table "cells", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "cell_device_id"
-    t.integer "cell_device_rev"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "lte_signal_strengths_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "lte_signal_strength_id", null: false
+    t.bigint "metric_id", null: false
   end
 
   create_table "metrics", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "cell_identity_lte_id"
-    t.bigint "cell_signal_strength_lte_id"
-    t.bigint "cell_identity_cdma_id"
-    t.bigint "cell_signal_strength_cdma_id"
-    t.bigint "cell_identity_wcdma_id"
-    t.bigint "cell_signal_strength_wcdma_id"
-    t.bigint "cell_identity_gsm_id"
-    t.bigint "cell_signal_strength_gsm_id"
-    t.bigint "cell_location_id"
+    t.bigint "location_id"
     t.bigint "ping_id"
     t.bigint "cell_info_id"
     t.bigint "raw_cell_info_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cell_identity_cdma_id"], name: "index_metrics_on_cell_identity_cdma_id"
-    t.index ["cell_identity_gsm_id"], name: "index_metrics_on_cell_identity_gsm_id"
-    t.index ["cell_identity_lte_id"], name: "index_metrics_on_cell_identity_lte_id"
-    t.index ["cell_identity_wcdma_id"], name: "index_metrics_on_cell_identity_wcdma_id"
     t.index ["cell_info_id"], name: "index_metrics_on_cell_info_id"
-    t.index ["cell_location_id"], name: "index_metrics_on_cell_location_id"
-    t.index ["cell_signal_strength_cdma_id"], name: "index_metrics_on_cell_signal_strength_cdma_id"
-    t.index ["cell_signal_strength_gsm_id"], name: "index_metrics_on_cell_signal_strength_gsm_id"
-    t.index ["cell_signal_strength_lte_id"], name: "index_metrics_on_cell_signal_strength_lte_id"
-    t.index ["cell_signal_strength_wcdma_id"], name: "index_metrics_on_cell_signal_strength_wcdma_id"
+    t.index ["location_id"], name: "index_metrics_on_location_id"
     t.index ["ping_id"], name: "index_metrics_on_ping_id"
     t.index ["raw_cell_info_id"], name: "index_metrics_on_raw_cell_info_id"
+  end
+
+  create_table "metrics_wcdma_identities", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "wcdma_identity_id", null: false
+    t.bigint "metric_id", null: false
+  end
+
+  create_table "metrics_wcdma_signal_strengths", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "wcdma_signal_strength_id", null: false
+    t.bigint "metric_id", null: false
   end
 
   create_table "pings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -183,16 +172,27 @@ ActiveRecord::Schema.define(version: 20171009234855) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "cell_identity_cdmas", "metrics"
-  add_foreign_key "cell_identity_gsms", "metrics"
-  add_foreign_key "cell_identity_ltes", "metrics"
-  add_foreign_key "cell_identity_wcdmas", "metrics"
-  add_foreign_key "cell_locations", "metrics"
+  create_table "wcdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "mcid"
+    t.integer "mmcc"
+    t.integer "mmnc"
+    t.integer "mlac"
+    t.integer "mpsc"
+    t.boolean "mregistered"
+    t.integer "mtimestamp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "wcdma_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "bit_error_rate"
+    t.integer "signal_strength"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "cell_metrics", "cells"
   add_foreign_key "cell_metrics", "metrics"
-  add_foreign_key "cell_signal_strength_cdmas", "metrics"
-  add_foreign_key "cell_signal_strength_gsms", "metrics"
-  add_foreign_key "cell_signal_strength_ltes", "metrics"
-  add_foreign_key "cell_signal_strength_wcdmas", "metrics"
+  add_foreign_key "locations", "metrics"
   add_foreign_key "pings", "metrics"
 end

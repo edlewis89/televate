@@ -1,2 +1,2 @@
-class CellLocation < ApplicationRecord
+class Location < ApplicationRecord
 end
