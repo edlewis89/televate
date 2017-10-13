@@ -8,11 +8,15 @@ class API::V1::UploadController < ApplicationController
     @result = {}
     c = Cell.order("created_at").last
     
-    c.metrics.each do |cm|
-      cm.ingested_data_metrics.each_with_index do |m, indx|
-        @result[indx] = {:raw => m.ingested_datum}
+    if c
+      c.metrics.each do |cm|
+        cm.ingested_data_metrics.each_with_index do |m, indx|
+          @result[indx] = {:raw => m.ingested_datum}
+        end
       end
-    end      
+    else
+      @result[0] = {:message => "no data ingested"}    
+    end    
     
     
     json_response(@result)
