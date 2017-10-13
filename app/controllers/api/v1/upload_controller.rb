@@ -5,8 +5,17 @@ class API::V1::UploadController < ApplicationController
   
   # GET /cell_info
   def index
-    @cell = Cell.all
-    json_response(@cell)
+    @result = {}
+    c = Cell.order("created_at").last
+    
+    c.metrics.each do |cm|
+      cm.ingested_data_metrics.each_with_index do |m, indx|
+        @result[indx] = {:raw => m.ingested_datum}
+      end
+    end      
+    
+    
+    json_response(@result)
   end
 
   # POST /create
