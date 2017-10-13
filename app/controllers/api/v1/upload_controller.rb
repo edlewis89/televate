@@ -63,7 +63,7 @@ class API::V1::UploadController < ApplicationController
   
   def extract(dsl)
     begin
-      if dsl.device_id != ''
+      if dsl.device_id && !dsl.device_id.empty?
         ####################################################
         #  CELL
         #
