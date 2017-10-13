@@ -23,17 +23,18 @@ class API::V1::UploadController < ApplicationController
   def create
     #puts "Creating cell info ..."
     # columns 1: device_id
-    # columns 2: cellInfo
-    # columns 3: location
-    # columns 4: timestamp
+    # column 2: line1number
+    # columns 3: cellInfo
+    # columns 4: location
+    # columns 5: timestamp
     
     if cell_info_params
       
       conditions = {}
       conditions[:device_id] = params[:device_id] unless params[:device_id].blank?
-      conditions[:cellinfo] = params[:cellinfo] unless params[:cellinfo].blank?
-      conditions[:location] = params[:location] unless params[:location].blank?
       conditions[:line1number] = params[:line1number] unless params[:line1number].blank?
+      conditions[:cellinfo] = params[:cellinfo] unless params[:cellinfo].blank?
+      conditions[:location] = params[:location] unless params[:location].blank?    
       conditions[:ping] = params[:ping] unless params[:ping].blank?
       #conditions[:timestamp] = params[:timestamp] unless params[:timestamp].blank?
       
@@ -260,7 +261,7 @@ class API::V1::UploadController < ApplicationController
     #  CELL
     #
     ####################################################  
-        c = Cell.new({:cell_device_id => dsl.device_id})
+        c = Cell.new({:cell_device_id => dsl.device_id, :line1number => dsl.line1number})
         if c.valid?
           c.save
           puts "...Initialized Cell Object #{c.cell_device_id}"
