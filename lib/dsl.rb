@@ -1,9 +1,9 @@
 
 module CellInfo
   class Dsl
-    attr_accessor :device_id, :cell_info_object, :cell_location_object, :cell_ping_object, :raw_data
+    attr_accessor :device_id, :cell_info_object, :cell_location_object, :cell_ping_object, :raw_data, :line1number
     
-    def initialize(device_id='', cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_timestamp='')
+    def initialize(device_id='', cell_line1number='', cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_timestamp='')
            
       #@location = cell_location_data #unless cell_location_data.empty? || cell_location_data == ''
       #@cell_ping_data = cell_ping_data #unless cell_ping_data.empty? || cell_ping_data == ''
@@ -11,7 +11,7 @@ module CellInfo
       
       if device_id && cell_info_data && cell_location_data #&& @timestamp
         @device_id = device_id #unless device_id.nil? || device_id == ''
-        #@raw_data = cell_info_data #unless cell_info_data.empty? || cell_info_data == ''
+        @line1number = cell_line1number #@raw_data = cell_info_data #unless cell_info_data.empty? || cell_info_data == ''
         @cell_ping_object = JSON.parse(cell_ping_data, object_class: OpenStruct) unless cell_ping_data.empty?
         @cell_info_object = JSON.parse(cell_info_data, object_class: OpenStruct) unless cell_info_data.empty?
         @cell_location_object = JSON.parse(cell_location_data, object_class: OpenStruct) unless cell_location_data.empty?

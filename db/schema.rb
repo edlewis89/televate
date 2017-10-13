@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20171013023715) do
   create_table "cells", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "cell_device_id"
     t.integer "cell_device_rev"
+    t.string "line1number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
