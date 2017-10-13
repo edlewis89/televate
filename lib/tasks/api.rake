@@ -1,65 +1,16 @@
+require 'json'
 require 'dsl'
 
-class API::V1::UploadController < ApplicationController
-  
-  
-  # GET /cell_info
-  def index
-    @cell = Cell.all
-    json_response(@cell)
+namespace :televate do
+  desc "Testing API"
+  task :api => :environment do    
+    #puts "Made #{cups} cups of coffee. Shakes are gone."
+    cellinfo='[{"mCellIdentityLte":{"mCi":12529157,"mMcc":310,"mMnc":260,"mPci":375,"mTac":20241},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":-117,"mRsrq":-13,"mRssnr":2147483647,"mSignalStrength":12,"mTimingAdvance":2147483647},"mRegistered":true,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityLte":{"mCi":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPci":350,"mTac":2147483647},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":-127,"mRsrq":-18,"mRssnr":2147483647,"mSignalStrength":7,"mTimingAdvance":2147483647},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityLte":{"mCi":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPci":0,"mTac":2147483647},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":0,"mRsrq":0,"mRssnr":2147483647,"mSignalStrength":31,"mTimingAdvance":2147483647},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityLte":{"mCi":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPci":288,"mTac":2147483647},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":-123,"mRsrq":-13,"mRssnr":2147483647,"mSignalStrength":6,"mTimingAdvance":2147483647},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityLte":{"mCi":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPci":340,"mTac":2147483647},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":-120,"mRsrq":-10,"mRssnr":2147483647,"mSignalStrength":7,"mTimingAdvance":2147483647},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityLte":{"mCi":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPci":0,"mTac":2147483647},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":0,"mRsrq":0,"mRssnr":2147483647,"mSignalStrength":31,"mTimingAdvance":2147483647},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityGsm":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647},"mCellSignalStrengthGsm":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityWcdma":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPsc":179},"mCellSignalStrengthWcdma":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3},{"mCellIdentityWcdma":{"mCid":2147483647,"mLac":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPsc":455},"mCellSignalStrengthWcdma":{"mBitErrorRate":99,"mSignalStrength":0},"mRegistered":false,"mTimeStamp":88154959123033,"mTimeStampType":3}]'
+    location='{"mAccuracy":4,"mAltitude":50,"mBearing":285,"mDistance":0,"mElapsedRealtimeNanos":297913762103831,"mExtras":{"mAllowFds":true,"mFdsKnown":true,"mHasFds":false,"mParcelledData":{"mNativePtr":-1205643840,"mNativeSize":0,"mOwnsNativeParcelObject":true}},"mHasAccuracy":true,"mHasAltitude":true,"mHasBearing":true,"mHasSpeed":true,"mInitialBearing":0,"mIsFromMockProvider":false,"mLat1":0,"mLat2":0,"mLatitude":39.0649336,"mLon1":0,"mLon2":0,"mLongitude":-77.44504723,"mProvider":"gps","mResults":[0,0],"mSpeed":3.56,"mTime":1507240624000}'
+    device_id='12345678'    
+    dsl = CellInfo::Dsl.new(device_id, cellinfo, location)    
+    extract(dsl)    
   end
-
-  # POST /create
-  def create
-    #puts "Creating cell info ..."
-    # columns 1: device_id
-    # columns 2: cellInfo
-    # columns 3: location
-    # columns 4: timestamp
-    
-    if cell_info_params
-      
-      conditions = {}
-      conditions[:device_id] = params[:device_id] unless params[:device_id].blank?
-      conditions[:cellinfo] = params[:cellinfo] unless params[:cellinfo].blank?
-      conditions[:location] = params[:location] unless params[:location].blank?
-      conditions[:ping] = params[:ping] unless params[:ping].blank?
-      conditions[:timestamp] = params[:timestamp] unless params[:timestamp].blank?
-      
-      dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])      
-      if extract(dsl)                 
-        success_upload(conditions)
-      else
-        ingest_error
-      end      
-    else
-      params_invalid     
-    end    
-  end
-  
-
-
-  # GET /cell/:id
-  def show
-    set_cell_info
-    json_response(@cell)
-  end
-
-  # PUT /cell/:id
-  def update
-    set_cell_info
-    @cell.update(cell_info_params)
-    head :no_content
-  end
-
-  # DELETE /cell/:id
-  def destroy
-    set_cell_info
-    @cell.destroy
-    head :no_content
-  end
-
-  private
   
   def extract(dsl)
     begin
@@ -116,7 +67,8 @@ class API::V1::UploadController < ApplicationController
           #
           #################################################### 
           
-          dsl.cell_info_object.each do |cell_info|            
+          dsl.cell_info_object.each do |cell_info|
+            #puts cell_info
           
             ####################################################
             #  LTE IDENTITY
@@ -220,60 +172,18 @@ class API::V1::UploadController < ApplicationController
             cdma_sig_strength_hash = cell_info.mCellSignalStrengthCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_sig_strength.respond_to?k.downcase.to_s}.to_h           
             cdma_sig_strength.update_attributes(cdma_sig_strength_hash) 
             m.cdma_signal_strengths << cdma_sig_strength 
-            end     
+            end
+            
+           
           end #for loop
           c.metrics<<m
-          c.save
-        end #c.save                 
-      end #if valid Cell
-    rescue StandardError => e
-      puts "Error: #{e}"
-      return false
-    end
+          end #c.save          
+        else #if valid Cell
+          puts "no device_id"        
+        end
+      rescue StandardError => e
+        puts "Error: #{e}"
+        return false
+      end
   end
- 
-  
-  
-  def success_upload(conditions)
-    render json: {
-      status: "sucess",
-      code: 200,
-      message: "ceated cell upload for device_id #{conditions[:device_id]}",
-      head: :no_content
-    }, status: 200, content_type: 'application/json'
-  end
-  
- def params_invalid
-    render json: {
-      status: 4000,
-      error: :unprocessable_entity,
-      message: 'Cell info not uploaded.  device_id, cellinfo, location, ping, timestamp is required.'
-    }, status: 4000, content_type: 'application/json'
-  end
-  
-  def params_nil
-    render json: {
-      status: 422,
-      error: :unprocessable_entity,
-      message: 'Cell info not uploaded.  device_id, cellinfo, location, ping, timestamp is required.'
-    }, status: 422, content_type: 'application/json'
-  end
-  
-  def ingest_error
-    render json: {
-      status: 422,
-      error: :unprocessable_entity,
-      message: 'Cell info not uploaded.'
-    }, status: 422, content_type: 'application/json'
-  end
-
-  def cell_info_params
-    # whitelist params
-    params.permit(:device_id, :cellinfo, :location, :ping, :timestamp, :format)
-  end
-
-  def set_cell_info
-    @cell = Cell.find(params[:id])
-  end
-  
 end

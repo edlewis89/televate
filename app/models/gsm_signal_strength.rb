@@ -1,4 +1,17 @@
 class GsmSignalStrength < ApplicationRecord
-  has_many :gsm_signal_strength_metrics
-  has_many :metrics, through: :gsm_signal_strength_metrics
+  has_many :gsm_signal_strengths_metrics, dependent: :destroy, :class_name => 'GsmSignalStrengthsMetrics'
+  has_many :metrics, through: :gsm_signal_strengths_metrics
+  # include ActiveModel::Serializers::JSON
+#  
+  # attr_accessor :bit_error_rate, :signal_strength
+# 
+  # def attributes=(hash)
+    # hash.each do |key, value|
+      # send("#{key}=", value)
+    # end
+  # end
+# 
+  # def attributes
+    # instance_values
+  # end
 end

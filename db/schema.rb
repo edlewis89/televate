@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171011042901) do
+ActiveRecord::Schema.define(version: 20171013023715) do
 
   create_table "cdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "mcid"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20171011042901) do
     t.integer "mlac"
     t.integer "mpsc"
     t.boolean "mregistered"
-    t.integer "mtimestamp"
+    t.string "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -30,8 +30,8 @@ ActiveRecord::Schema.define(version: 20171011042901) do
   end
 
   create_table "cdma_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "bit_error_rate"
-    t.integer "signal_strength"
+    t.integer "mbiterrorrate"
+    t.integer "msignalstrength"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -41,21 +41,16 @@ ActiveRecord::Schema.define(version: 20171011042901) do
     t.bigint "metric_id", null: false
   end
 
-  create_table "cell_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "cell_id"
-    t.bigint "metric_id"
-    t.datetime "last_pull"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cell_id"], name: "index_cell_metrics_on_cell_id", unique: true
-    t.index ["metric_id"], name: "index_cell_metrics_on_metric_id", unique: true
-  end
-
   create_table "cells", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "cell_device_id"
     t.integer "cell_device_rev"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "cells_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "cell_id", null: false
+    t.bigint "metric_id", null: false
   end
 
   create_table "gsm_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -64,7 +59,7 @@ ActiveRecord::Schema.define(version: 20171011042901) do
     t.integer "mmnc"
     t.integer "mlac"
     t.boolean "mregistered"
-    t.integer "mtimestamp"
+    t.string "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -75,14 +70,26 @@ ActiveRecord::Schema.define(version: 20171011042901) do
   end
 
   create_table "gsm_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "bit_error_rate"
-    t.integer "signal_strength"
+    t.integer "mbiterrorrate"
+    t.integer "msignalstrength"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "gsm_signal_strengths_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "gsm_signal_strength_id", null: false
+    t.bigint "metric_id", null: false
+  end
+
+  create_table "ingested_data", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ingested_data_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "ingested_datum_id", null: false
     t.bigint "metric_id", null: false
   end
 
@@ -106,7 +113,7 @@ ActiveRecord::Schema.define(version: 20171011042901) do
     t.integer "mpci"
     t.integer "mtac"
     t.boolean "mregistered"
-    t.integer "mtimestamp"
+    t.string "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -121,8 +128,9 @@ ActiveRecord::Schema.define(version: 20171011042901) do
     t.integer "mrsrp"
     t.integer "mrsrqc"
     t.integer "mrssnr"
-    t.integer "signal_strength"
-    t.integer "timing"
+    t.integer "mrsrq"
+    t.integer "msignalstrength"
+    t.string "mtimingadvance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -135,14 +143,11 @@ ActiveRecord::Schema.define(version: 20171011042901) do
   create_table "metrics", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "location_id"
     t.bigint "ping_id"
-    t.bigint "cell_info_id"
-    t.bigint "raw_cell_info_id"
+    t.datetime "ingest_timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cell_info_id"], name: "index_metrics_on_cell_info_id"
     t.index ["location_id"], name: "index_metrics_on_location_id"
     t.index ["ping_id"], name: "index_metrics_on_ping_id"
-    t.index ["raw_cell_info_id"], name: "index_metrics_on_raw_cell_info_id"
   end
 
   create_table "metrics_wcdma_identities", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -166,12 +171,6 @@ ActiveRecord::Schema.define(version: 20171011042901) do
     t.index ["metric_id"], name: "index_pings_on_metric_id", unique: true
   end
 
-  create_table "raw_cell_infos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.text "raw_cell_info"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "wcdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "mcid"
     t.integer "mmcc"
@@ -179,20 +178,18 @@ ActiveRecord::Schema.define(version: 20171011042901) do
     t.integer "mlac"
     t.integer "mpsc"
     t.boolean "mregistered"
-    t.integer "mtimestamp"
+    t.string "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "wcdma_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "bit_error_rate"
-    t.integer "signal_strength"
+    t.integer "mbiterrorrate"
+    t.integer "msignalstrength"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "cell_metrics", "cells"
-  add_foreign_key "cell_metrics", "metrics"
   add_foreign_key "locations", "metrics"
   add_foreign_key "pings", "metrics"
 end

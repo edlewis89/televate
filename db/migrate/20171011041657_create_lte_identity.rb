@@ -8,7 +8,7 @@ class CreateLteIdentity < ActiveRecord::Migration[5.1]
       t.integer :mpci
       t.integer :mtac
       t.boolean :mregistered
-      t.integer :mtimestamp
+      t.string :mtimestamp
       t.timestamps
     end
   end

@@ -5,8 +5,9 @@ class CreateLteSignalStrength < ActiveRecord::Migration[5.1]
       t.integer :mrsrp
       t.integer :mrsrqc
       t.integer :mrssnr
-      t.integer :signal_strength
-      t.integer :timing
+      t.integer :mrsrq
+      t.integer :msignalstrength
+      t.string :mtimingadvance
     
       t.timestamps
     end

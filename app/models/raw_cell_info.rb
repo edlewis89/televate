@@ -1,2 +1,0 @@
-class RawCellInfo < ApplicationRecord
-end
