@@ -63,7 +63,7 @@ class API::V1::UploadController < ApplicationController
   
   def extract(dsl)
     begin
-      if dsl.device_id
+      if dsl.device_id != ''
         ####################################################
         #  CELL
         #
@@ -224,15 +224,17 @@ class API::V1::UploadController < ApplicationController
           end #for loop
           c.metrics<<m
           c.save
-        end #c.save                 
-      end #if valid Cell
+        else
+          false
+        end #c.valid?
+      else
+       false                    
+      end #if device_id
     rescue StandardError => e
       puts "Error: #{e}"
       return false
     end
   end
- 
-  
   
   def success_upload(conditions)
     render json: {
