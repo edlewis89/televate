@@ -1,0 +1,5 @@
+example_id                                                 | status | run_time        |
+---------------------------------------------------------- | ------ | --------------- |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:1] | passed | 0.00375 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:2] | passed | 0.224 seconds   |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:2:1] | passed | 0.12934 seconds |

@@ -42,8 +42,8 @@ ActiveRecord::Schema.define(version: 20171013023715) do
   end
 
   create_table "cells", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "cell_device_id"
     t.integer "cell_device_rev"
+    t.string "cell_device_id"
     t.string "line1number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 20171013023715) do
     t.decimal "mlatitude", precision: 10, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_locations_on_metric_id", unique: true
+    t.index ["metric_id"], name: "index_locations_on_metric_id"
   end
 
   create_table "lte_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -169,7 +169,7 @@ ActiveRecord::Schema.define(version: 20171013023715) do
     t.decimal "ping_percent_loss", precision: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_pings_on_metric_id", unique: true
+    t.index ["metric_id"], name: "index_pings_on_metric_id"
   end
 
   create_table "wcdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

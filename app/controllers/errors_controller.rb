@@ -22,11 +22,5 @@ class ErrorsController < ApplicationController
       message: 'Unprocessable cell info.  Invalid authenticity token'
     }, status: 422, content_type: 'application/json'
   end
-  def invalid_params
-    render json: {
-      status: 4000,
-      error: :unprocessable_entity,
-      message: 'Cell info not uploaded.  device_id, cellinfo, location, ping, timestamp is required.'
-    }, status: 4000, content_type: 'application/json'
-  end
+  
 end

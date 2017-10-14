@@ -10,8 +10,8 @@ class CreateMetrics < ActiveRecord::Migration[5.1]
       #t.belongs_to :cell_signal_strength_wcdma, index: true
       #t.belongs_to :cell_identity_gsm, index: true
       #t.belongs_to :cell_signal_strength_gsm, index: true
-      t.belongs_to :location, index: true
-      t.belongs_to :ping, index: true
+      t.belongs_to :location, index: { unique: true } 
+      t.belongs_to :ping, index: { unique: true } 
       #t.belongs_to :cell_info, index: true
       #t.belongs_to :ingested_datum, index: true
       t.datetime :ingest_timestamp

@@ -31,21 +31,22 @@ class API::V1::UploadController < ApplicationController
     if cell_info_params
       
       conditions = {}
-      conditions[:device_id] = params[:device_id] unless params[:device_id].blank?
-      conditions[:line1number] = params[:line1number] unless params[:line1number].blank?
-      conditions[:cellinfo] = params[:cellinfo] unless params[:cellinfo].blank?
-      conditions[:location] = params[:location] unless params[:location].blank?    
-      conditions[:ping] = params[:ping] unless params[:ping].blank?
-      #conditions[:timestamp] = params[:timestamp] unless params[:timestamp].blank?
-      
+      conditions[:device_id] = params[:device_id] 
+      conditions[:line1number] = params[:line1number] 
+      conditions[:cellinfo] = params[:cellinfo] 
+      conditions[:location] = params[:location]   
+      conditions[:ping] = params[:ping] 
+      conditions[:timestamp] = params[:timestamp] 
+            
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:line1number], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])      
+      
       if extract(dsl)                 
         success_upload(conditions)
       else
         ingest_error
       end      
     else
-      params_invalid     
+      ingest_error     
     end    
   end
   
@@ -74,16 +75,17 @@ class API::V1::UploadController < ApplicationController
   
   def extract(dsl)
     begin
-      if dsl.device_id && !dsl.device_id.empty?
+      if dsl.device_id && dsl.device_id != ''
         cell = Cell.where(:cell_device_id => dsl.device_id).first
         if cell
           #update
-          update_cell_info(dsl, cell)
+          return update_cell_info(dsl, cell)
+          
         else
-          insert_cell_info(dsl)
+          return insert_cell_info(dsl)
         end
       else
-       false                    
+       return false                    
       end #if device_id
     rescue StandardError => e
       puts "Error: #{e}"
@@ -91,15 +93,15 @@ class API::V1::UploadController < ApplicationController
     end
   end
   
-  def update_cell_info(dsl, cell)
+  def update_cell_info(dsl, c)
     
     ####################################################
     #  UPDATE
     #
     ####################################################  
        
-          
-          puts "...Initialized Cell Object #{c.cell_device_id}"
+      if !dsl.cell_info_object.nil? && !dsl.cell_info_object.empty?    
+          puts "...Updating Cell Object #{c.cell_device_id}"
           ####################################################
           #  METRIC
           #
@@ -116,29 +118,34 @@ class API::V1::UploadController < ApplicationController
           #  PING
           #
           ####################################################         
+          if !dsl.cell_ping_object.nil?
           ping = Ping.new()
           ingest_ping_hash ={}
           ping_hash = {}
-          ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h unless dsl.cell_ping_object.nil?
+          ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h if !dsl.cell_ping_object.nil?
           ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase} unless ping_hash       
           #puts ingest_ping_hash
           m.create_ping(ingest_ping_hash)
+          end
           ####################################################
           #  LOCATION
           #
           #################################################### 
+          if dsl.cell_location_object && !dsl.cell_location_object.empty?
+            puts "...adding location data #{dsl.cell_location_object}" unless dsl.cell_location_object.nil?
+            location = Location.new()
+            ingest_location_hash ={}
+            location_hash={}
+            
+            location_hash = dsl.cell_location_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
+            puts "...location parse #{location_hash}" 
+            ingest_location_hash = location_hash.select{|k, v| ingest_location_hash[k.downcase]=v if location.respond_to?k.downcase.to_s} 
+            puts "...ingest_location_hash parse #{ingest_location_hash}" 
+            location.update_attributes(ingest_location_hash)
+            m.location_id = location.id
+            
+          end
           
-          puts "...adding location data #{dsl.cell_location_object}" unless dsl.cell_location_object.nil?
-          location = Location.new()
-          ingest_location_hash ={}
-          location_hash={}
-          location_hash = dsl.cell_location_object.each_pair.map{|k, v| [k.downcase, v]}.to_h unless dsl.cell_location_object.nil?
-          puts "...location parse #{location_hash}" unless location_hash.nil?
-          ingest_location_hash = location_hash.select{|k, v| ingest_location_hash[k.downcase]=v if location.respond_to?k.downcase.to_s} unless location_hash.nil? 
-          puts "...ingest_location_hash parse #{ingest_location_hash}" unless location_hash.nil?
-          location.update_attributes(ingest_location_hash)
-          m.location_id = location.id
-          puts "...ingest location data"
           ####################################################
           #  CELL INFO
           #
@@ -150,7 +157,7 @@ class API::V1::UploadController < ApplicationController
             #  LTE IDENTITY
             #  
             #################################################### 
-            if cell_info.mCellIdentityLte
+            if cell_info.mCellIdentityLte && !cell_info.mCellIdentityLte.empty?
             lte_identity = LteIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
             ingest_lte_identity_hash ={}            
             ingest_lte_identity_hash = cell_info.mCellIdentityLte.each_pair.map{|k,v| [k.downcase, v] if lte_identity.respond_to?k.downcase.to_s}.to_h       
@@ -252,7 +259,10 @@ class API::V1::UploadController < ApplicationController
           end #for loop
           c.metrics<<m
           c.save
-         
+        else
+          puts "no cell info object to update"
+          return true
+       end
     
   end
   
@@ -262,7 +272,7 @@ class API::V1::UploadController < ApplicationController
     #
     ####################################################  
         c = Cell.new({:cell_device_id => dsl.device_id, :line1number => dsl.line1number})
-        if c.valid?
+        if c.valid? && dsl.cell_info_object && !dsl.cell_info_object.empty?
           c.save
           puts "...Initialized Cell Object #{c.cell_device_id}"
           ####################################################
@@ -281,29 +291,33 @@ class API::V1::UploadController < ApplicationController
           #  PING
           #
           ####################################################         
-          ping = Ping.new()
-          ingest_ping_hash ={}
-          ping_hash = {}
-          ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h unless dsl.cell_ping_object.nil?
-          ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase} unless ping_hash       
-          #puts ingest_ping_hash
-          m.create_ping(ingest_ping_hash)
+          if !dsl.cell_ping_object.nil?
+            ping = Ping.new()
+            ingest_ping_hash ={}
+            ping_hash = {}
+            ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
+            ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
+            #puts ingest_ping_hash
+            m.create_ping(ingest_ping_hash)
+          end
           ####################################################
           #  LOCATION
           #
           #################################################### 
+          if dsl.cell_location_object && !dsl.cell_location_object.empty?
+            puts "...adding location data #{dsl.cell_location_object}" 
+            location = Location.new()
+            ingest_location_hash ={}
+            location_hash={}
+            location_hash = dsl.cell_location_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
+            #puts "...location parse #{location_hash}" 
+            ingest_location_hash = location_hash.select{|k, v| ingest_location_hash[k.downcase]=v if location.respond_to?k.downcase.to_s}  
+            #puts "...ingest_location_hash parse #{ingest_location_hash}" 
+            location.update_attributes(ingest_location_hash)
+            m.location_id = location.id
+            puts "...ingest location data"
+          end
           
-          puts "...adding location data #{dsl.cell_location_object}" unless dsl.cell_location_object.nil?
-          location = Location.new()
-          ingest_location_hash ={}
-          location_hash={}
-          location_hash = dsl.cell_location_object.each_pair.map{|k, v| [k.downcase, v]}.to_h unless dsl.cell_location_object.nil?
-          puts "...location parse #{location_hash}" unless location_hash.nil?
-          ingest_location_hash = location_hash.select{|k, v| ingest_location_hash[k.downcase]=v if location.respond_to?k.downcase.to_s} unless location_hash.nil? 
-          puts "...ingest_location_hash parse #{ingest_location_hash}" unless location_hash.nil?
-          location.update_attributes(ingest_location_hash)
-          m.location_id = location.id
-          puts "...ingest location data"
           ####################################################
           #  CELL INFO
           #
@@ -315,11 +329,12 @@ class API::V1::UploadController < ApplicationController
             #  LTE IDENTITY
             #  
             #################################################### 
-            if cell_info.mCellIdentityLte
+            if cell_info.mCellIdentityLte && !cell_info.mCellIdentityLte.empty?            
             lte_identity = LteIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
             ingest_lte_identity_hash ={}            
             ingest_lte_identity_hash = cell_info.mCellIdentityLte.each_pair.map{|k,v| [k.downcase, v] if lte_identity.respond_to?k.downcase.to_s}.to_h       
             lte_identity.update_attributes(ingest_lte_identity_hash) 
+            puts "...adding CellIdentityLte data #{ingest_lte_identity_hash}" 
             m.lte_identities << lte_identity 
             end
             
@@ -328,11 +343,12 @@ class API::V1::UploadController < ApplicationController
             #  
             ####################################################
             #puts cell_info.inspect
-            if cell_info.mCellIdentityGsm
+            if cell_info.mCellIdentityGsm && !cell_info.mCellIdentityGsm.empty?
             gsm_identity = GsmIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
             ingest_gsm_identity_hash ={}            
             ingest_gsm_identity_hash = cell_info.mCellIdentityGsm.each_pair.map{|k,v| [k.downcase, v] if gsm_identity.respond_to?k.downcase.to_s}.to_h           
             gsm_identity.update_attributes(ingest_gsm_identity_hash) 
+            puts "...adding CellIdentityGsm data #{ingest_gsm_identity_hash}"
             m.gsm_identities << gsm_identity 
             end
             
@@ -342,11 +358,12 @@ class API::V1::UploadController < ApplicationController
             #  
             ####################################################
             #puts cell_info.inspect
-            if cell_info.mCellIdentityWcdma
+            if cell_info.mCellIdentityWcdma && !cell_info.mCellIdentityWcdma.empty?
             wcdma_identity = WcdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
             ingest_wcdma_identity_hash ={}            
             ingest_wcdma_identity_hash = cell_info.mCellIdentityWcdma.each_pair.map{|k,v| [k.downcase, v] if wcdma_identity.respond_to?k.downcase.to_s}.to_h           
             wcdma_identity.update_attributes(ingest_wcdma_identity_hash) 
+            puts "...adding mCellIdentityWcdma data #{ingest_wcdma_identity_hash}"
             m.wcdma_identities << wcdma_identity 
             end
             
@@ -355,11 +372,12 @@ class API::V1::UploadController < ApplicationController
             #  
             ####################################################
             #puts cell_info.inspect
-            if cell_info.mCellIdentityCdma
+            if cell_info.mCellIdentityCdma && !cell_info.mCellIdentityCdma.empty?
             cdma_identity = CdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
             ingest_cdma_identity_hash ={}            
             ingest_cdma_identity_hash = cell_info.mCellIdentityCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_identity.respond_to?k.downcase.to_s}.to_h           
             cdma_identity.update_attributes(ingest_cdma_identity_hash) 
+            puts "...adding mCellIdentityCdma data #{ingest_cdma_identity_hash}"
             m.cdma_identities << cdma_identity 
             end
             
@@ -367,8 +385,8 @@ class API::V1::UploadController < ApplicationController
             #  LTE Signal Strength 
             #  
             ####################################################
-            puts cell_info.mCellSignalStrengthLte
-            if cell_info.mCellSignalStrengthLte
+            #puts cell_info.mCellSignalStrengthLte
+            if cell_info.mCellSignalStrengthLte && !cell_info.mCellSignalStrengthLte.empty?
             lte_sig_strength = LteSignalStrength.new({}) 
             lte_sig_strength_hash ={}            
             lte_sig_strength_hash = cell_info.mCellSignalStrengthLte.each_pair.map{|k,v| [k.downcase, v] if lte_sig_strength.respond_to?k.downcase.to_s}.to_h           
@@ -380,8 +398,8 @@ class API::V1::UploadController < ApplicationController
             #  GSM Signal Strength 
             #  
             ####################################################
-            puts cell_info.mCellSignalStrengthGsm
-            if cell_info.mCellSignalStrengthGsm
+            #puts cell_info.mCellSignalStrengthGsm
+            if cell_info.mCellSignalStrengthGsm && !cell_info.mCellSignalStrengthGsm.empty?
             gsm_sig_strength = GsmSignalStrength.new({}) 
             gsm_sig_strength_hash ={}            
             gsm_sig_strength_hash = cell_info.mCellSignalStrengthGsm.each_pair.map{|k,v| [k.downcase, v] if gsm_sig_strength.respond_to?k.downcase.to_s}.to_h           
@@ -394,7 +412,7 @@ class API::V1::UploadController < ApplicationController
             #  
             ####################################################
             #puts cell_info.inspect
-            if cell_info.mCellSignalStrengthWcdma
+            if cell_info.mCellSignalStrengthWcdma && !cell_info.mCellSignalStrengthWcdma.empty?
             wcdma_sig_strength = WcdmaSignalStrength.new({}) 
             wcdma_sig_strength_hash ={}            
             wcdma_sig_strength_hash = cell_info.mCellSignalStrengthWcdma.each_pair.map{|k,v| [k.downcase, v] if wcdma_sig_strength.respond_to?k.downcase.to_s}.to_h           
@@ -407,7 +425,7 @@ class API::V1::UploadController < ApplicationController
             #  
             ####################################################
             #puts cell_info.inspect
-            if cell_info.mCellSignalStrengthCdma
+            if cell_info.mCellSignalStrengthCdma && !cell_info.mCellSignalStrengthCdma.empty?
             cdma_sig_strength = CdmaSignalStrength.new({}) 
             cdma_sig_strength_hash ={}            
             cdma_sig_strength_hash = cell_info.mCellSignalStrengthCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_sig_strength.respond_to?k.downcase.to_s}.to_h           
@@ -416,9 +434,9 @@ class API::V1::UploadController < ApplicationController
             end     
           end #for loop
           c.metrics<<m
-          c.save
+          return c.save
         else
-          false
+          return false      
         end #c.valid?
   end
   
@@ -431,22 +449,6 @@ class API::V1::UploadController < ApplicationController
     }, status: 200, content_type: 'application/json'
   end
   
- def params_invalid
-    render json: {
-      status: 4000,
-      error: :unprocessable_entity,
-      message: 'Cell info not uploaded.  device_id, cellinfo, location, ping, timestamp is required.'
-    }, status: 4000, content_type: 'application/json'
-  end
-  
-  def params_nil
-    render json: {
-      status: 422,
-      error: :unprocessable_entity,
-      message: 'Cell info not uploaded.  device_id, cellinfo, location, ping, timestamp is required.'
-    }, status: 422, content_type: 'application/json'
-  end
-  
   def ingest_error
     render json: {
       status: 422,
@@ -457,7 +459,7 @@ class API::V1::UploadController < ApplicationController
 
   def cell_info_params
     # whitelist params
-    params.permit(:device_id, :cellinfo, :location, :ping, :timestamp, :format)
+    params.permit(:device_id, :cellinfo, :location, :ping, :timestamp, :line1number, :format)
   end
 
   def set_cell_info
