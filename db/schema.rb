@@ -13,11 +13,11 @@
 ActiveRecord::Schema.define(version: 20171013023715) do
 
   create_table "cdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "mcid"
-    t.integer "mmcc"
-    t.integer "mmnc"
-    t.integer "mlac"
-    t.integer "mpsc"
+    t.integer "mbasestationid"
+    t.integer "mlatitude"
+    t.integer "mlongitude"
+    t.integer "mnetworkid"
+    t.integer "msystemid"
     t.boolean "mregistered"
     t.string "mtimestamp"
     t.datetime "created_at", null: false
@@ -30,8 +30,11 @@ ActiveRecord::Schema.define(version: 20171013023715) do
   end
 
   create_table "cdma_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "mbiterrorrate"
-    t.integer "msignalstrength"
+    t.integer "mcdmadbm"
+    t.integer "mcdmaecio"
+    t.integer "mevdodbm"
+    t.integer "mevdoecio"
+    t.integer "mevdosnr"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -42,7 +45,7 @@ ActiveRecord::Schema.define(version: 20171013023715) do
   end
 
   create_table "cells", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "cell_device_rev"
+    t.string "cell_device_rev"
     t.string "cell_device_id"
     t.string "line1number"
     t.datetime "created_at", null: false
@@ -100,11 +103,12 @@ ActiveRecord::Schema.define(version: 20171013023715) do
     t.integer "maltitude"
     t.integer "mdistance"
     t.integer "mspeed"
+    t.integer "mbearing"
     t.decimal "mlongitude", precision: 10, scale: 6
     t.decimal "mlatitude", precision: 10, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_locations_on_metric_id"
+    t.index ["metric_id"], name: "index_locations_on_metric_id", unique: true
   end
 
   create_table "lte_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -147,8 +151,8 @@ ActiveRecord::Schema.define(version: 20171013023715) do
     t.datetime "ingest_timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["location_id"], name: "index_metrics_on_location_id"
-    t.index ["ping_id"], name: "index_metrics_on_ping_id"
+    t.index ["location_id"], name: "index_metrics_on_location_id", unique: true
+    t.index ["ping_id"], name: "index_metrics_on_ping_id", unique: true
   end
 
   create_table "metrics_wcdma_identities", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -169,7 +173,7 @@ ActiveRecord::Schema.define(version: 20171013023715) do
     t.decimal "ping_percent_loss", precision: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["metric_id"], name: "index_pings_on_metric_id"
+    t.index ["metric_id"], name: "index_pings_on_metric_id", unique: true
   end
 
   create_table "wcdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

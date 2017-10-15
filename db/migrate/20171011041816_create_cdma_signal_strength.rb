@@ -5,9 +5,9 @@ class CreateCdmaSignalStrength < ActiveRecord::Migration[5.1]
       #{"mCdmaDbm":-89,"mCdmaEcio":-70,"mEvdoDbm":-2147483647,"mEvdoEcio":-2147483647,"mEvdoSnr":2147483647}
       t.integer :mcdmadbm
       t.integer :mcdmaecio
-      t.integer :mEvdoDbm
-      t.integer :mEvdoEcio
-      t.integer :mEvdoSnr
+      t.integer :mevdodbm
+      t.integer :mevdoecio
+      t.integer :mevdosnr
       t.timestamps
       
       

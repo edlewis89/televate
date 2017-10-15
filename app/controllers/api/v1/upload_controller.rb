@@ -342,10 +342,10 @@ class API::V1::UploadController < ApplicationController
             #  GSM IDENTITY
             #  
             ####################################################
-            #puts cell_info.inspect
-            if cell_info.mCellIdentityGsm && !cell_info.mCellIdentityGsm.empty?
+            puts cell_info.inspect
+            if cell_info.mCellIdentityGsm && !cell_info.mCellIdentityGsm.empty?              
             gsm_identity = GsmIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
-            ingest_gsm_identity_hash ={}            
+            ingest_gsm_identity_hash ={}                        
             ingest_gsm_identity_hash = cell_info.mCellIdentityGsm.each_pair.map{|k,v| [k.downcase, v] if gsm_identity.respond_to?k.downcase.to_s}.to_h           
             gsm_identity.update_attributes(ingest_gsm_identity_hash) 
             puts "...adding CellIdentityGsm data #{ingest_gsm_identity_hash}"
@@ -373,9 +373,12 @@ class API::V1::UploadController < ApplicationController
             ####################################################
             #puts cell_info.inspect
             if cell_info.mCellIdentityCdma && !cell_info.mCellIdentityCdma.empty?
+            puts "here #{cell_info.mRegistered} #{cell_info.mTimeStamp}"   
             cdma_identity = CdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
+            puts "here #{cdma_identity.inspect}"   
             ingest_cdma_identity_hash ={}            
             ingest_cdma_identity_hash = cell_info.mCellIdentityCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_identity.respond_to?k.downcase.to_s}.to_h           
+            puts "here"   
             cdma_identity.update_attributes(ingest_cdma_identity_hash) 
             puts "...adding mCellIdentityCdma data #{ingest_cdma_identity_hash}"
             m.cdma_identities << cdma_identity 
