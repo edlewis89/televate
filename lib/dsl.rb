@@ -1,15 +1,22 @@
 
 module CellInfo
   class Dsl
-    attr_accessor :device_id, :line1number, :cell_info_object, :cell_location_object, :cell_ping_object
+    attr_accessor :device_id, :line1number, :cell_info_object, :cell_location_object, :cell_ping_object, :ingested_json_data, :ingested_location_data
     
     def initialize(cell_device_id="", cell_line1number="", cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_timestamp={})      
       if cell_device_id && cell_device_id != ''       
         @device_id = cell_device_id
-        @line1number = cell_line1number if cell_line1number && cell_line1number != ''              
-        @cell_info_object = JSON.parse(cell_info_data, object_class: OpenStruct) if cell_info_data && !cell_info_data.empty?
-        @cell_location_object = JSON.parse(cell_location_data, object_class: OpenStruct) if cell_location_data && !cell_location_data.empty?
-        @cell_ping_object = JSON.parse(cell_ping_data, object_class: OpenStruct) if cell_ping_data && !cell_ping_data.empty?
+        @line1number = cell_line1number if cell_line1number && cell_line1number != ''   
+        @ingested_json_data = cell_info_data  if cell_info_data && !cell_info_data.empty?  
+        @ingested_location_data = cell_location_data  if cell_location_data && !cell_location_data.empty?        
+        begin
+          @cell_info_object = JSON.parse(cell_info_data, object_class: OpenStruct) if cell_info_data && !cell_info_data.empty?
+          @cell_location_object = JSON.parse(cell_location_data, object_class: OpenStruct) if cell_location_data && !cell_location_data.empty?
+          @cell_ping_object = JSON.parse(cell_ping_data, object_class: OpenStruct) if cell_ping_data && !cell_ping_data.empty?
+          true
+        rescue JSON::ParserError
+          false
+        end
       end         
     end
 

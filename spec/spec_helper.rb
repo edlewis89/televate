@@ -94,7 +94,7 @@
   Kernel.srand config.seed
 =end
 
-
+#require "spec/json_expectations"
 
 RSpec.configure do |config|
   # config.include ApiHelper, type: :api
@@ -106,6 +106,7 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
   end
+  
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.filter_run_when_matching :focus
   config.example_status_persistence_file_path = "spec/examples.txt"

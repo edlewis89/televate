@@ -39,12 +39,16 @@ class API::V1::UploadController < ApplicationController
       conditions[:timestamp] = params[:timestamp] 
             
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:line1number], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])      
-      
-      if extract(dsl)                 
-        success_upload(conditions)
+      if dsl 
+        if extract(dsl)                 
+          success_upload(conditions)
+        else
+          ingest_error
+        end   
       else
-        ingest_error
-      end      
+          ingest_error
+      end
+        
     else
       ingest_error     
     end    
@@ -76,7 +80,7 @@ class API::V1::UploadController < ApplicationController
   def extract(dsl)
     begin
       if dsl.device_id && dsl.device_id != ''
-        cell = Cell.where(:cell_device_id => dsl.device_id).first
+        cell = Cell.where(:cell_device_id => dsl.device_id, :line1number => dsl.line1number).first
         if cell
           #update
           return update_cell_info(dsl, cell)
@@ -106,12 +110,11 @@ class API::V1::UploadController < ApplicationController
           #  METRIC
           #
           ####################################################   
-          m = Metric.new({:ingest_timestamp => DateTime.now()})
-          m.save
+          m = Metric.new({:ingest_timestamp => DateTime.now()})         
           puts "...Initialized Metric Object #{m.ingest_timestamp}"
           
-          m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.cell_info_object})
-          m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.cell_location_object}) 
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data})
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data}) 
           puts "...added raw data #{m.ingested_datum.size}"
           
           ####################################################
@@ -257,6 +260,7 @@ class API::V1::UploadController < ApplicationController
             m.cdma_signal_strengths << cdma_sig_strength 
             end     
           end #for loop
+          m.save!
           c.metrics<<m
           c.save
         else
@@ -273,14 +277,14 @@ class API::V1::UploadController < ApplicationController
     ####################################################  
         c = Cell.new({:cell_device_id => dsl.device_id, :line1number => dsl.line1number})
         if c.valid? && dsl.cell_info_object && !dsl.cell_info_object.empty?
-          c.save
+          
           puts "...Initialized Cell Object #{c.cell_device_id}"
           ####################################################
           #  METRIC
           #
           ####################################################   
           m = Metric.new({:ingest_timestamp => DateTime.now()})
-          m.save
+         
           puts "...Initialized Metric Object #{m.ingest_timestamp}"
           
           m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.cell_info_object})
@@ -372,13 +376,10 @@ class API::V1::UploadController < ApplicationController
             #  
             ####################################################
             #puts cell_info.inspect
-            if cell_info.mCellIdentityCdma && !cell_info.mCellIdentityCdma.empty?
-            puts "here #{cell_info.mRegistered} #{cell_info.mTimeStamp}"   
-            cdma_identity = CdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
-            puts "here #{cdma_identity.inspect}"   
+            if cell_info.mCellIdentityCdma && !cell_info.mCellIdentityCdma.empty?           
+            cdma_identity = CdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp})             
             ingest_cdma_identity_hash ={}            
-            ingest_cdma_identity_hash = cell_info.mCellIdentityCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_identity.respond_to?k.downcase.to_s}.to_h           
-            puts "here"   
+            ingest_cdma_identity_hash = cell_info.mCellIdentityCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_identity.respond_to?k.downcase.to_s}.to_h                         
             cdma_identity.update_attributes(ingest_cdma_identity_hash) 
             puts "...adding mCellIdentityCdma data #{ingest_cdma_identity_hash}"
             m.cdma_identities << cdma_identity 
@@ -436,6 +437,8 @@ class API::V1::UploadController < ApplicationController
             m.cdma_signal_strengths << cdma_sig_strength 
             end     
           end #for loop
+          c.save
+          m.save
           c.metrics<<m
           return c.save
         else
