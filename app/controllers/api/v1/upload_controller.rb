@@ -275,9 +275,9 @@ class API::V1::UploadController < ApplicationController
     #  CELL
     #
     ####################################################  
-        c = Cell.new({:cell_device_id => dsl.device_id, :line1number => dsl.line1number})
+        c = Cell.new({:cell_device_id => dsl.device_id})
         if c.valid? && dsl.cell_info_object && !dsl.cell_info_object.empty?
-          
+          c.line1number = dsl.line1number if dsl.line1number
           puts "...Initialized Cell Object #{c.cell_device_id}"
           ####################################################
           #  METRIC

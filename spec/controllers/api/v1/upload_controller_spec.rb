@@ -34,13 +34,22 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
       expect(Cell.count).to eq 0
     end
     
-    it "should create a Cell with an device_id and cell info" do
+    it "should create a Cell with a device_id. line1number and cell info" do
       json = { :format => 'json', :device_id => device_id, :line1number=>line1number, :cellinfo=>cell_info.to_json}
       post :create, params: json  
       expect(response.status).to eq(200)
       c = Cell.where(:cell_device_id => '1', :line1number => "7039692078").first
       expect(c).not_to be nil
       expect(c.line1number).to eq '7039692078'
+      expect(c.cell_device_id).to eq '1'
+    end
+    it "should create a Cell with a only a device_id and cell info" do
+      json = { :format => 'json', :device_id => device_id, :line1number=>"", :cellinfo=>cell_info.to_json}
+      post :create, params: json  
+      expect(response.status).to eq(200)
+      c = Cell.where(:cell_device_id => '1', :line1number => nil).first
+      expect(c).not_to be nil
+      expect(c.line1number).to eq nil
       expect(c.cell_device_id).to eq '1'
     end
    end
@@ -67,6 +76,18 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
       
        
       c = Cell.where(:cell_device_id => '1', :line1number => "7039692078").first
+      expect(c.metrics.count).to eq 2
+      expect(c.metrics[1].lte_identities.count).to eq 1
+    end
+    
+    it "should update existing cell when no line1number present" do 
+     
+      
+      post :create, params: json.reject{ |k| k.to_sym == :line1number }        
+      post :create, params: json.reject{ |k| k.to_sym == :line1number } 
+      
+       
+      c = Cell.where(:cell_device_id => '1', :line1number => nil).first
       expect(c.metrics.count).to eq 2
       expect(c.metrics[1].lte_identities.count).to eq 1
     end
