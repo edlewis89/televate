@@ -101,7 +101,7 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
     let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :cellinfo=>cell_info.to_json}}    
     
   
-    it "should mregisterd for the te identity" do 
+    it "should mregisterd for the lte identity" do 
       post :create, params: json 
       #expect(c.cell_device_id).to eq "1234"
       c = Cell.where(:cell_device_id => '1234', :line1number => "7039692078").first
