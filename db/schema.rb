@@ -103,9 +103,9 @@ ActiveRecord::Schema.define(version: 20171013023715) do
     t.integer "maltitude"
     t.integer "mdistance"
     t.integer "mspeed"
-    t.integer "mbearing"
-    t.decimal "mlongitude", precision: 10, scale: 6
-    t.decimal "mlatitude", precision: 10, scale: 6
+    t.decimal "mbearing", precision: 15, scale: 13
+    t.decimal "mlongitude", precision: 15, scale: 13
+    t.decimal "mlatitude", precision: 15, scale: 13
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["metric_id"], name: "index_locations_on_metric_id", unique: true

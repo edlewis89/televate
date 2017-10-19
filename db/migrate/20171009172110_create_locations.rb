@@ -7,9 +7,9 @@ class CreateLocations < ActiveRecord::Migration[5.1]
       t.integer :maltitude
       t.integer :mdistance
       t.integer :mspeed
-      t.integer :mbearing, {:precision=>10, :scale=>6}
-      t.decimal :mlongitude, {:precision=>10, :scale=>6}
-      t.decimal :mlatitude, {:precision=>10, :scale=>6}
+      t.decimal :mbearing, {:precision=>15, :scale=>13}
+      t.decimal :mlongitude, {:precision=>15, :scale=>13}
+      t.decimal :mlatitude, {:precision=>15, :scale=>13}
 
       t.timestamps
     end
