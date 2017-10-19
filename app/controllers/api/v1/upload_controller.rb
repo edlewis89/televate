@@ -260,7 +260,7 @@ class API::V1::UploadController < ApplicationController
             m.cdma_signal_strengths << cdma_sig_strength 
             end     
           end #for loop
-          m.save!
+          m.save
           c.metrics<<m
           c.save
         else
