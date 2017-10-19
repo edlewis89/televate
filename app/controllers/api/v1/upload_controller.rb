@@ -46,7 +46,7 @@ class API::V1::UploadController < ApplicationController
           ingest_error
         end   
       else
-          ingest_error
+        ingest_error
       end
         
     else
@@ -80,7 +80,7 @@ class API::V1::UploadController < ApplicationController
   def extract(dsl)
     begin
       if dsl.device_id && dsl.device_id != ''
-        cell = Cell.where(:cell_device_id => dsl.device_id, :line1number => dsl.line1number).first
+        cell = Cell.where(:cell_device_id => dsl.device_id).first
         if cell
           #update
           return update_cell_info(dsl, cell)
