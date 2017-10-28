@@ -170,6 +170,9 @@ ActiveRecord::Schema.define(version: 20171013023715) do
     t.integer "ping_avg"
     t.integer "ping_max"
     t.integer "ping_min"
+    t.string "host"
+    t.string "net"
+    t.text "output"
     t.decimal "ping_percent_loss", precision: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

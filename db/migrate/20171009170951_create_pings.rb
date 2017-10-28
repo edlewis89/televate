@@ -7,6 +7,9 @@ class CreatePings < ActiveRecord::Migration[5.1]
       t.integer :ping_avg
       t.integer :ping_max
       t.integer :ping_min
+      t.string :host
+      t.string :net
+      t.text :output
       t.decimal :ping_percent_loss, :precision => 2
 
       t.timestamps

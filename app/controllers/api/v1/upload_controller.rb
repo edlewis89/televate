@@ -37,7 +37,7 @@ class API::V1::UploadController < ApplicationController
       conditions[:location] = params[:location]   
       conditions[:ping] = params[:ping] 
       conditions[:timestamp] = params[:timestamp] 
-            
+      #cell_device_id="", cell_line1number="", cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_timestamp={}       
       dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:line1number], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])      
       if dsl 
         if extract(dsl)                 
@@ -97,14 +97,6 @@ class API::V1::UploadController < ApplicationController
     end
   end
   
-  def transfer_money(source_id, target_id, amount)
-  source_account = Account.find(source_id)
-  target_account = Account.find(target_id)  
-  source_account.balance -= amount
-  target_account.balance += amount  
-  source_account.save!
-  target_account.save!
-end
   
   
   def update_cell_info(dsl, c)
@@ -124,7 +116,8 @@ end
           puts "...Initialized Metric Object #{m.ingest_timestamp}"
           
           m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data})
-          m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data}) 
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data})
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data})  
           puts "...added raw data #{m.ingested_datum.size}"
           
           ####################################################
@@ -300,6 +293,7 @@ end
             
             m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.cell_info_object})
             m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.cell_location_object}) 
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.cell_ping_object}) 
             puts "...added raw data #{m.ingested_datum.size}"
             
             ####################################################
