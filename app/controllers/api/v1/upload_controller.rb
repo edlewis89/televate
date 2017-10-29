@@ -130,8 +130,11 @@ class API::V1::UploadController < ApplicationController
           ping_hash = {}
           ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h if !dsl.cell_ping_object.nil?
           ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase} unless ping_hash       
+          puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
+          ping.update_attributes(ingest_ping_hash)
+          m.ping_id = ping.id
           #puts ingest_ping_hash
-          m.create_ping(ingest_ping_hash)
+          #m.create_ping(ingest_ping_hash)
           end
           ####################################################
           #  LOCATION
@@ -306,8 +309,9 @@ class API::V1::UploadController < ApplicationController
               ping_hash = {}
               ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
               ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
-              #puts ingest_ping_hash
-              m.create_ping(ingest_ping_hash)
+              puts "...ingest_ingest_hash parse #{ingest_ping_hash}" 
+              ping.update_attributes(ingest_ping_hash)
+              m.ping_id = ping.id
             end
             ####################################################
             #  LOCATION

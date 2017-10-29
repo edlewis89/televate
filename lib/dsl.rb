@@ -9,14 +9,15 @@ module CellInfo
         @line1number = cell_line1number if cell_line1number && cell_line1number != ''   
         @ingested_json_data = cell_info_data  if cell_info_data && !cell_info_data.empty?  
         @ingested_location_data = cell_location_data  if cell_location_data && !cell_location_data.empty?     
-        @ingested_ping_data = cell_ping_data  if cell_ping_data && !cell_ping_data.empty?        
+        @ingested_ping_data = cell_ping_data  if cell_ping_data && !cell_ping_data.empty? 
+        puts "----------->Parsed success ping #{@cell_ping_object.inspect}" if cell_ping_data && !cell_ping_data.empty?
+        puts "----------->Parsed success location #{@cell_location_object.inspect}" if cell_location_data && !cell_location_data.empty?
+        puts "----------->Parsed success cell info #{@cell_info_object.inspect}" if cell_info_data && !cell_info_data.empty?       
         begin
           @cell_info_object = JSON.parse(@ingested_json_data, object_class: OpenStruct) if @ingested_json_data && !@ingested_json_data.empty?
           @cell_location_object = JSON.parse(@ingested_location_data, object_class: OpenStruct) if @ingested_location_data && !@ingested_location_data.empty?
           @cell_ping_object = JSON.parse(@ingested_ping_data, object_class: OpenStruct) if @ingested_ping_data && !@ingested_ping_data.empty?
-          puts "----------->Parsed success #{@cell_ping_object.inspect}"
-          puts "----------->Parsed success #{@cell_location_object.inspect}"
-          puts "----------->Parsed success #{@cell_info_object.inspect}"
+          
           true
         rescue JSON::ParserError => e
           puts "Error parsing #{e}"
