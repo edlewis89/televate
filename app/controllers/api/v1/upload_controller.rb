@@ -6,7 +6,7 @@ class API::V1::UploadController < ApplicationController
   # GET /cell_info
   def index
     @result = {}
-    c = Cell.order("created_at").last    
+    c = Cell.order("updated_at").last    
     if c
       c.metrics.each do |cm|
         cm.ingested_data_metrics.each_with_index do |m, indx|
@@ -17,6 +17,18 @@ class API::V1::UploadController < ApplicationController
       @result[0] = {:message => "no data ingested"}    
     end    
     json_response(@result)
+  end
+  
+  def report
+    @cells = Cell.paginate(:page => params[:page], :per_page => 10) 
+    if @cells.size > 0
+      @metrics = @cells.metrics     
+    end
+    #respond_to do |format|
+    #  format.html { render :partial => "report", notice: 'Task was successfully destroyed.' }
+    #  format.json { head :no_content }
+    #end
+    
   end
 
   # POST /create
@@ -56,24 +68,24 @@ class API::V1::UploadController < ApplicationController
   
 
   # GET /cell/:id
-  def show
-    set_cell_info
-    json_response(@cell)
-  end
+  #def show
+  #  set_cell_info
+  #  json_response(@cell)
+  #end
 
   # PUT /cell/:id
-  def update
-    set_cell_info
-    @cell.update(cell_info_params)
-    head :no_content
-  end
+  # def update
+    # set_cell_info
+    # @cell.update(cell_info_params)
+    # head :no_content
+  # end
 
   # DELETE /cell/:id
-  def destroy
-    set_cell_info
-    @cell.destroy
-    head :no_content
-  end
+  # def destroy
+    # set_cell_info
+    # @cell.destroy
+    # head :no_content
+  # end
 
   private
   

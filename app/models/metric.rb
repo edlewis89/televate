@@ -5,6 +5,7 @@ class Metric < ApplicationRecord
   
   has_many :cells_metrics, dependent: :destroy, :class_name => 'CellsMetrics'
   has_many :cells, through: :cells_metrics
+  
   accepts_nested_attributes_for :cells_metrics, :cells
   
   has_many :ingested_data_metrics, dependent: :destroy, :class_name => 'IngestedDataMetrics'
