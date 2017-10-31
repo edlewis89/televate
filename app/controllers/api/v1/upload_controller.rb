@@ -21,9 +21,9 @@ class API::V1::UploadController < ApplicationController
   
   def report
     @cells = Cell.paginate(:page => params[:page], :per_page => 10) 
-    if @cells.size > 0
-      @metrics = @cells.metrics     
-    end
+    #if @cells.size > 0
+    #  @metrics = @cells.metrics     
+    #end
     #respond_to do |format|
     #  format.html { render :partial => "report", notice: 'Task was successfully destroyed.' }
     #  format.json { head :no_content }
@@ -171,19 +171,21 @@ class API::V1::UploadController < ApplicationController
           #  CELL INFO
           #
           #################################################### 
-          
+          #only collect 6 mregistered= false
+          mr_counter = 0
           dsl.cell_info_object.each do |cell_info|            
           
             ####################################################
             #  LTE IDENTITY
             #  
             #################################################### 
+            
             if cell_info.mCellIdentityLte && !cell_info.mCellIdentityLte.empty?
-            lte_identity = LteIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
-            ingest_lte_identity_hash ={}            
-            ingest_lte_identity_hash = cell_info.mCellIdentityLte.each_pair.map{|k,v| [k.downcase, v] if lte_identity.respond_to?k.downcase.to_s}.to_h       
-            lte_identity.update_attributes(ingest_lte_identity_hash) 
-            m.lte_identities << lte_identity 
+              lte_identity = LteIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
+              ingest_lte_identity_hash ={}            
+              ingest_lte_identity_hash = cell_info.mCellIdentityLte.each_pair.map{|k,v| [k.downcase, v] if lte_identity.respond_to?k.downcase.to_s}.to_h       
+              lte_identity.update_attributes(ingest_lte_identity_hash) 
+              m.lte_identities << lte_identity 
             end
             
             ####################################################
@@ -192,11 +194,11 @@ class API::V1::UploadController < ApplicationController
             ####################################################
             #puts cell_info.inspect
             if cell_info.mCellIdentityGsm
-            gsm_identity = GsmIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
-            ingest_gsm_identity_hash ={}            
-            ingest_gsm_identity_hash = cell_info.mCellIdentityGsm.each_pair.map{|k,v| [k.downcase, v] if gsm_identity.respond_to?k.downcase.to_s}.to_h           
-            gsm_identity.update_attributes(ingest_gsm_identity_hash) 
-            m.gsm_identities << gsm_identity 
+              gsm_identity = GsmIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
+              ingest_gsm_identity_hash ={}            
+              ingest_gsm_identity_hash = cell_info.mCellIdentityGsm.each_pair.map{|k,v| [k.downcase, v] if gsm_identity.respond_to?k.downcase.to_s}.to_h           
+              gsm_identity.update_attributes(ingest_gsm_identity_hash) 
+              m.gsm_identities << gsm_identity 
             end
             
             
@@ -206,11 +208,11 @@ class API::V1::UploadController < ApplicationController
             ####################################################
             #puts cell_info.inspect
             if cell_info.mCellIdentityWcdma
-            wcdma_identity = WcdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
-            ingest_wcdma_identity_hash ={}            
-            ingest_wcdma_identity_hash = cell_info.mCellIdentityWcdma.each_pair.map{|k,v| [k.downcase, v] if wcdma_identity.respond_to?k.downcase.to_s}.to_h           
-            wcdma_identity.update_attributes(ingest_wcdma_identity_hash) 
-            m.wcdma_identities << wcdma_identity 
+              wcdma_identity = WcdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
+              ingest_wcdma_identity_hash ={}            
+              ingest_wcdma_identity_hash = cell_info.mCellIdentityWcdma.each_pair.map{|k,v| [k.downcase, v] if wcdma_identity.respond_to?k.downcase.to_s}.to_h           
+              wcdma_identity.update_attributes(ingest_wcdma_identity_hash) 
+              m.wcdma_identities << wcdma_identity 
             end
             
             ####################################################
@@ -219,11 +221,11 @@ class API::V1::UploadController < ApplicationController
             ####################################################
             #puts cell_info.inspect
             if cell_info.mCellIdentityCdma
-            cdma_identity = CdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
-            ingest_cdma_identity_hash ={}            
-            ingest_cdma_identity_hash = cell_info.mCellIdentityCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_identity.respond_to?k.downcase.to_s}.to_h           
-            cdma_identity.update_attributes(ingest_cdma_identity_hash) 
-            m.cdma_identities << cdma_identity 
+              cdma_identity = CdmaIdentity.new({:mregistered => cell_info.mRegistered, :mtimestamp => cell_info.mTimeStamp}) 
+              ingest_cdma_identity_hash ={}            
+              ingest_cdma_identity_hash = cell_info.mCellIdentityCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_identity.respond_to?k.downcase.to_s}.to_h           
+              cdma_identity.update_attributes(ingest_cdma_identity_hash) 
+              m.cdma_identities << cdma_identity 
             end
             
             ####################################################
@@ -232,11 +234,11 @@ class API::V1::UploadController < ApplicationController
             ####################################################
             puts cell_info.mCellSignalStrengthLte
             if cell_info.mCellSignalStrengthLte
-            lte_sig_strength = LteSignalStrength.new({}) 
-            lte_sig_strength_hash ={}            
-            lte_sig_strength_hash = cell_info.mCellSignalStrengthLte.each_pair.map{|k,v| [k.downcase, v] if lte_sig_strength.respond_to?k.downcase.to_s}.to_h           
-            lte_sig_strength.update_attributes(lte_sig_strength_hash) 
-            m.lte_signal_strengths << lte_sig_strength 
+              lte_sig_strength = LteSignalStrength.new({}) 
+              lte_sig_strength_hash ={}            
+              lte_sig_strength_hash = cell_info.mCellSignalStrengthLte.each_pair.map{|k,v| [k.downcase, v] if lte_sig_strength.respond_to?k.downcase.to_s}.to_h           
+              lte_sig_strength.update_attributes(lte_sig_strength_hash) 
+              m.lte_signal_strengths << lte_sig_strength 
             end
             
             ####################################################
@@ -245,11 +247,11 @@ class API::V1::UploadController < ApplicationController
             ####################################################
             puts cell_info.mCellSignalStrengthGsm
             if cell_info.mCellSignalStrengthGsm
-            gsm_sig_strength = GsmSignalStrength.new({}) 
-            gsm_sig_strength_hash ={}            
-            gsm_sig_strength_hash = cell_info.mCellSignalStrengthGsm.each_pair.map{|k,v| [k.downcase, v] if gsm_sig_strength.respond_to?k.downcase.to_s}.to_h           
-            gsm_sig_strength.update_attributes(gsm_sig_strength_hash) 
-            m.gsm_signal_strengths << gsm_sig_strength 
+              gsm_sig_strength = GsmSignalStrength.new({}) 
+              gsm_sig_strength_hash ={}            
+              gsm_sig_strength_hash = cell_info.mCellSignalStrengthGsm.each_pair.map{|k,v| [k.downcase, v] if gsm_sig_strength.respond_to?k.downcase.to_s}.to_h           
+              gsm_sig_strength.update_attributes(gsm_sig_strength_hash) 
+              m.gsm_signal_strengths << gsm_sig_strength 
             end
             
             ####################################################
@@ -258,11 +260,11 @@ class API::V1::UploadController < ApplicationController
             ####################################################
             #puts cell_info.inspect
             if cell_info.mCellSignalStrengthWcdma
-            wcdma_sig_strength = WcdmaSignalStrength.new({}) 
-            wcdma_sig_strength_hash ={}            
-            wcdma_sig_strength_hash = cell_info.mCellSignalStrengthWcdma.each_pair.map{|k,v| [k.downcase, v] if wcdma_sig_strength.respond_to?k.downcase.to_s}.to_h           
-            wcdma_sig_strength.update_attributes(wcdma_sig_strength_hash) 
-            m.wcdma_signal_strengths << wcdma_sig_strength 
+              wcdma_sig_strength = WcdmaSignalStrength.new({}) 
+              wcdma_sig_strength_hash ={}            
+              wcdma_sig_strength_hash = cell_info.mCellSignalStrengthWcdma.each_pair.map{|k,v| [k.downcase, v] if wcdma_sig_strength.respond_to?k.downcase.to_s}.to_h           
+              wcdma_sig_strength.update_attributes(wcdma_sig_strength_hash) 
+              m.wcdma_signal_strengths << wcdma_sig_strength 
             end
             
             ####################################################
@@ -271,11 +273,11 @@ class API::V1::UploadController < ApplicationController
             ####################################################
             #puts cell_info.inspect
             if cell_info.mCellSignalStrengthCdma
-            cdma_sig_strength = CdmaSignalStrength.new({}) 
-            cdma_sig_strength_hash ={}            
-            cdma_sig_strength_hash = cell_info.mCellSignalStrengthCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_sig_strength.respond_to?k.downcase.to_s}.to_h           
-            cdma_sig_strength.update_attributes(cdma_sig_strength_hash) 
-            m.cdma_signal_strengths << cdma_sig_strength 
+              cdma_sig_strength = CdmaSignalStrength.new({}) 
+              cdma_sig_strength_hash ={}            
+              cdma_sig_strength_hash = cell_info.mCellSignalStrengthCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_sig_strength.respond_to?k.downcase.to_s}.to_h           
+              cdma_sig_strength.update_attributes(cdma_sig_strength_hash) 
+              m.cdma_signal_strengths << cdma_sig_strength 
             end     
           end #for loop
           m.save

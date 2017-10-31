@@ -3,21 +3,21 @@
   <table>
 	  <tr>
 	    <td><h2>Cell Info</h2></td>
-	    <% @cells.each do |cell| %>
-	      <td> <p>Device Id: <%= cell.cell_device_id %></p></td> 
-	      <td> <p>Phone Number: <%= cell.line1number %></p></td> 
-	    <% end %>
+	    <% @cells.each do |c| %>
+	      <td> <p>Device Id: <%= c.cell_device_id %></p></td> 
+	      <td> <p>Phone Number: <%= c.line1number %></p></td> 
+	    
 	     
 	  </tr>
-	<% if @metrics && @metrics.size > 0%> 
-		<% @metrics.each do |metric| %>		
+		<% if c.metrics && c.metrics.size > 0%> 
+		<% c.metrics.each do |m| %>		
 		
-		  <tr>
+		 
 
-		  	<td><p>Metric Id: <%= metric.id%></p></td>
-		    <td><p>Created Time: <%= metric.created_at.strftime("%a, %b %e %Y") %></p></td>
-		    <td><p>Updated Time: <%= metric.updated_at.strftime("%a, %b %e %Y") %></p></td>
-		    
+		  	<td><p>Metric Id: <%= m.id%></p></td>
+		    <td><p>Created Time: <%= m.created_at.strftime("%a, %b %e %Y") %></p></td>
+		    <td><p>Updated Time: <%= m.updated_at.strftime("%a, %b %e %Y") %></p></td>
+		    <% if m.location_id %>
 			<td><p>Location mAccuracy: <%= Location.find(m.location_id).maccuracy %></p></td>
 			<td><p>Location mAltitude <%= Location.find(m.location_id).maltitude %></p></td>
 			<td><p>Location mDistance: <%= Location.find(m.location_id).mdistance %></p></td>
@@ -25,122 +25,123 @@
 			<td><p>Location mBearing: <%= Location.find(m.location_id).mbearing %></p></td>
 			<td><p>Location mLongitude: <%= Location.find(m.location_id).mlongitude %></p></td>
 			<td><p>Location mLatitude: <%= Location.find(m.location_id).mlatitude %></p></td>
-					
+			<%end%>
+			<% if m.ping_id %>
 			<td><p>Ping avg: <%= Ping.find(m.ping_id).ping_avg %></p></td>
 			<td><p>Ping max: <%= Ping.find(m.ping_id).ping_max %></p></td>
 			<td><p>Ping host: <%= Ping.find(m.ping_id).host %></p></td>
 			<td><p>Ping net: <%= Ping.find(m.ping_id).net %></p></td>
 			<td><p>Ping output: <%= Ping.find(m.ping_id).output %></p></td>
 			<td><p>Ping percent loss: <%= Ping.find(m.ping_id).ping_percent_loss %></p></td>
+		    <%end%>
 		    
-		    <% LteIdentitiesMetrics.find_by_metric_id(m.id).each do |lte_identities| %>
-		      <% if lte_identities != nil %>
-		        <% lte_identities.each do |identity| %>
+		      <% if m.lte_identities != nil %>
+		        <% m.lte_identities.each do |identity| %>
 			      <tr>
-			        <% LteIdentities.find(identity.id).each do |lte_identity| %>
+			        
 			         
-			          <td><p>Lte mRegistered: <%= lte_identity.mregistered %></p></td>					   
-					  <td><p>Lte Mci: <%= lte_identity.mci %></p></td>	
-					  <td><p>Lte Mmcc: <%= lte_identity.mmcc %></p></td>	
-					  <td><p>Lte Mmnc: <%= lte_identity.mmnc %></p></td>	
-					  <td><p>Lte Mpci: <%= lte_identity.mpci %></p></td>	
-					  <td><p>Lte Mtac: <%= lte_identity.mtac %></p></td>					   
-			          <td><p>Lte TimeStamp: <%= lte_identity.mtimestamp.strftime("%a, %b %e %Y") %></p></td>				   
-				    <% end %>
+			          <td><p>Lte mRegistered: <%= identity.mregistered %></p></td>					   
+					  <td><p>Lte Mci: <%= identity.mci %></p></td>	
+					  <td><p>Lte Mmcc: <%= identity.mmcc %></p></td>	
+					  <td><p>Lte Mmnc: <%= identity.mmnc %></p></td>	
+					  <td><p>Lte Mpci: <%= identity.mpci %></p></td>	
+					  <td><p>Lte Mtac: <%= identity.mtac %></p></td>					   
+			          <td><p>Lte TimeStamp: <%= identity.mtimestamp %></p></td>				   
+				   
 			      </tr>
 			  	<%end%>
 			<% else %>
 			  <td><p>No LTE IDENTITIES</p></td>	
 			<% end %>
-		  <% end %>
+		 
 		  
-		   <% LteSignalStrengthsMetrics.find_by_metric_id(m.id).each do |lte_signal_strengths| %>
-		    <% if lte_signal_strengths != nil %>
-		      <% lte_signal_strengths.each do |signal_strengths| %>
+		 
+		    <% if m.lte_signal_strengths != nil %>
+		      <% m.lte_signal_strengths.each do |signal_strengths| %>
 		        <tr>
-		        <% LteSignalStrengths.find(signal_strengths.id).each do |lte_signal_strength| %>
+		       
 		          
 		                    
-		          <td><p>Lte mCqi <%= lte_signal_strength.mcqi %></p></td>					   
-				  <td><p>Lte mRsrp <%= lte_signal_strength.mrsrp %></p></td>
-				  <td><p>Lte mRsrqc <%= lte_signal_strength.mrsrqc %></p></td>
-				  <td><p>Lte mRssnr <%= lte_signal_strength.mrssnr %></p></td>
-				  <td><p>Lte mRsrq <%= lte_signal_strength.mrsrq %></p></td>
-				  <td><p>Lte mSignalstrength <%= lte_signal_strength.msignalstrength %></p>	</td>			   
-		          <td><p>Lte mTimingadvance <%= lte_signal_strength.mtimingadvance%></p></td>				   
-			    <% end %>
+		          <td><p>Lte mCqi <%= signal_strengths.mcqi %></p></td>					   
+				  <td><p>Lte mRsrp <%= signal_strengths.mrsrp %></p></td>
+				  <td><p>Lte mRsrqc <%= signal_strengths.mrsrqc %></p></td>
+				  <td><p>Lte mRssnr <%= signal_strengths.mrssnr %></p></td>
+				  <td><p>Lte mRsrq <%= signal_strengths.mrsrq %></p></td>
+				  <td><p>Lte mSignalstrength <%= signal_strengths.msignalstrength %></p>	</td>			   
+		          <td><p>Lte mTimingadvance <%= signal_strengths.mtimingadvance%></p></td>				   
+			
 			     </tr>
 			  <%end%>
 			<% else %>
 			  <td><p>No LTE Signal Strengths</p></td>
 			<% end %>
-		  <% end %>  
+		
 		  
-		  <% GsmIdentitiesMetrics.find_by_metric_id(m.id).each do |gsm_identities| %>
-		    <% if gsm_identities != nil %>
-		      <% gsm_identities.each do |identity| %>
+		 
+		    <% if m.gsm_identities != nil %>
+		      <% m.gsm_identities.each do |gsmidentity| %>
 		    	<tr>
-		        <% GsmIdentities.find(identity.id).each do |gsm_identity| %>
+		      
 		         
-		          <td><p>Gsm mRegistered: <%= gsm_identity.mregistered %></p></td>				   
-				  <td><p>Gsm Mcid: <%= gsm_identity.mcid %></p></td>
-				  <td><p>Gsm Mmcc: <%= gsm_identity.mmcc %></p></td>
-				  <td><p>Gsm Mmnc: <%= gsm_identity.mmnc %></p></td>
-				  <td><p>Gsm Mlac: <%= gsm_identity.mlac %></p></td>		   
-		          <td><p>Gsm TimeStamp: <%= gsm_identity.mtimestamp.strftime("%a, %b %e %Y") %></p></td>				   
-			    <% end %>
+		          <td><p>Gsm mRegistered: <%= gsmidentity.mregistered %></p></td>				   
+				  <td><p>Gsm Mcid: <%= gsmidentity.mcid %></p></td>
+				  <td><p>Gsm Mmcc: <%= gsmidentity.mmcc %></p></td>
+				  <td><p>Gsm Mmnc: <%= gsmidentity.mmnc %></p></td>
+				  <td><p>Gsm Mlac: <%= gsmidentity.mlac %></p></td>		   
+		          <td><p>Gsm TimeStamp: <%= gsmidentity.mtimestamp %></p></td>				   
+			   
 			    </tr>
 			  <%end%>
 			<% else %>
 			  <td><p>No Gsm IDENTITIES</p></td>
 			<% end %>
-		  <% end %>
+		 
 		  
-		  <% GsmSignalStrengthsMetrics.find_by_metric_id(m.id).each do |gsm_signal_strengths| %>
-		    <% if gsm_signal_strengths != nil %>
-		      <% gsm_signal_strengths.each do |signal_strengths| %>
+		 
+		    <% if m.gsm_signal_strengths != nil %>
+		      <% m.gsm_signal_strengths.each do |gsm_signal_strengths| %>
 		        <tr>
-		        <% GsmSignalStrengths.find(signal_strengths.id).each do |gsm_signal_strength| %>
+		      
 		         
 		                    
-		          <td><p>Gsm mSignalstrength <%= gsm_signal_strength.msignalstrength %></p></td>				   
-				  <td><p>Gsm mBiterrorrate <%= gsm_signal_strength.mbiterrorrate %></p></td>
+		          <td><p>Gsm mSignalstrength <%= gsm_signal_strengths.msignalstrength %></p></td>				   
+				  <td><p>Gsm mBiterrorrate <%= gsm_signal_strengths.mbiterrorrate %></p></td>
 				 			   
-			    <% end %>
+			  
 			    </tr>
 			  <%end%>
 			<% else %>
 			  <td><p>No GSM Signal Strengths</p></td>
 			<% end %>
-		  <% end %>
 		  
-		   <% MetricsWcdmaIdentities.find_by_metric_id(m.id).each do |wcdma_identities| %>
-		    <% if wcdma_identities != nil %>
-		      <% wcdma_identities.each do |identity| %>
+		  
+		  
+		    <% if m.wcdma_identities != nil %>
+		      <% m.wcdma_identities.each do |wcdm_identity| %>
 				<tr>
-		        <% WcdmaIdentities.find(identity.id).each do |wcdma_identity| %>
+		        
 		          
 		         
-		          <td><p>Wcdma mRegistered: <%= wcdma_identity.mregistered %></p>	</td>				   
-				  <td><p>Wcdma Mcid: <%= wcdma_identity.mcid %></p></td>
-				  <td><p>Wcdma Mmcc: <%= wcdma_identity.mmcc %></p></td>
-				  <td><p>Wcdma Mmnc: <%= wcdma_identity.mmnc %></p></td>
-				  <td><p>Wcdma Mlac: <%= wcdma_identity.mlac %></p></td>	
-				  <td><p>Wcdma Mpsc: <%= wcdma_identity.mpsc %></p></td>		   
-		          <td><p>Wcdma TimeStamp: <%= wcdma_identity.mtimestamp.strftime("%a, %b %e %Y") %></p></td>				   
-			    <% end %>
+		          <td><p>Wcdma mRegistered: <%= wcdm_identity.mregistered %></p>	</td>				   
+				  <td><p>Wcdma Mcid: <%= wcdm_identity.mcid %></p></td>
+				  <td><p>Wcdma Mmcc: <%= wcdm_identity.mmcc %></p></td>
+				  <td><p>Wcdma Mmnc: <%= wcdm_identity.mmnc %></p></td>
+				  <td><p>Wcdma Mlac: <%= wcdm_identity.mlac %></p></td>	
+				  <td><p>Wcdma Mpsc: <%= wcdm_identity.mpsc %></p></td>		   
+		          <td><p>Wcdma TimeStamp: <%= wcdm_identity.mtimestamp%></p></td>				   
+			  
 			    </tr>
 			  <%end%>
 			<% else %>
 			  <td><p>No Wcdma IDENTITIES</p></td>
 			<% end %>
-		  <% end %>
+		 
 		  
-		   <% CdmaIdentitiesMetrics.find_by_metric_id(m.id).each do |cdma_identities| %>
-		    <% if cdma_identities != nil %>
-		      <% cdma_identities.each do |identity| %>
+		  
+		    <% if m.cdma_identities != nil %>
+		      <% m.cdma_identities.each do |cdma_identity| %>
 				<tr>
-		        <% CdmaIdentities.find(identity.id).each do |cdma_identity| %>
+		        
 		         
 		          <td><p>Cdma mRegistered: <%= cdma_identity.mregistered %></p>	</td>				   
 				  <td><p>Cdma mSystemid: <%= cdma_identity.msystemid %></p></td>
@@ -148,23 +149,23 @@
 				  <td><p>Cdma mLongitude: <%= cdma_identity.mlongitude %></p></td>
 				  <td><p>Cdma mLatitude: <%= cdma_identity.mlatitude %></p></td>	
 				  <td><p>Cdma mBasestationid: <%= cdma_identity.mbasestationid %></p></td>		   
-		          <td><p>Cdma TimeStamp: <%= cdma_identity.mtimestamp.strftime("%a, %b %e %Y") %></p></td>				   
-			    <% end %>
+		          <td><p>Cdma TimeStamp: <%= cdma_identity.mtimestamp%></p></td>				   
+			  
 			    </tr>
 			  <%end%>
 		    <% else %>
 			  <td><p>No Cdma IDENTITIES</p></td>
 			<% end %>
-		  <% end %>
+		 
 		  
 		  
 		  
 		<% end %>
-	  </tr> 
+	  
 	<% else %>
 	  <p>No Metrics</p>
 	<% end %>
-
+<% end %>
 </table>
 <% will_paginate @cells %>
   
