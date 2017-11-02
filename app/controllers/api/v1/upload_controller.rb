@@ -1,8 +1,8 @@
 require 'dsl'
 
 class API::V1::UploadController < ApplicationController
-  
-  
+  #before_action :set_page, :only => [:report]
+  CELLS_PER_PAGE = 5
   # GET /cell_info
   def index
     @result = {}
@@ -20,7 +20,10 @@ class API::V1::UploadController < ApplicationController
   end
   
   def report
-    @cells = Cell.paginate(:page => params[:page], :per_page => 10) 
+    @cells = Cell.paginate(:page => set_page, :per_page => CELLS_PER_PAGE).order("created_at ASC") 
+    #@cells = Cell.limit(CELLS_PER_PAGE).offset(@page * CELLS_PER_PAGE).order("created_at ASC") 
+   
+    
     #if @cells.size > 0
     #  @metrics = @cells.metrics     
     #end
@@ -498,4 +501,16 @@ class API::V1::UploadController < ApplicationController
     @cell = Cell.find(params[:id])
   end
   
+ 
+  def set_page
+     @page = case params[:page]
+     when params[:page].nil?
+       1
+     when params[:page].to_i < 0 || params[:page].to_i == 0
+       1
+     else       
+       params[:page] || 1 
+     end
+       
+  end
 end

@@ -55,6 +55,9 @@ group :test do
 end
 
 gem 'will_paginate'
+gem "table-for"
+#gem "tablebuilder", :git => "https://github.com/mbreit/tablebuilder"
+
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

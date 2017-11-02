@@ -1,0 +1,365 @@
+<table style="width:500px">
+  <thead>
+  <tr>
+    <th>Device Id</th>
+    <th style="text-align:right;">Line1number</th>
+    <th style="text-align:right;">Metrics Count</th>
+    <th style="text-align:right;">Metric Id </th>
+    
+    
+    <th style="text-align:right;">Created Time</th>
+  	<th style="text-align:right;">Updated Time</th>
+  	
+  	<th style="text-align:right;">mAccuracy</th> 	
+  	<th style="text-align:right;">mAltitude</th>
+  	<th style="text-align:right;">mAltitude</th>
+  	<th style="text-align:right;">mDistance:</th>
+  	<th style="text-align:right;">mSpeed:</th>
+  	<th style="text-align:right;">mBearing:</th>
+  	<th style="text-align:right;">mLongitude:</th>
+  	<th style="text-align:right;">mLatitude:</th>
+  	
+  	
+  	<th style="text-align:right;">Ping avg:</th>
+  	<th style="text-align:right;">Ping max: </th>
+  	<th style="text-align:right;">Ping host:</th>
+  	<th style="text-align:right;">Ping net: </th>
+  	<th style="text-align:right;">Ping output: </th>
+  	<th style="text-align:right;">Ping percent loss:</th>
+  	
+  	<th style="text-align:right;">Lte mRegistered:</th>					   
+	<th style="text-align:right;">Lte Mci: </th>	
+	<th style="text-align:right;">Lte Mmcc: </th>	
+	<th style="text-align:right;">Lte Mmnc: </th>	
+	<th style="text-align:right;">Lte Mpci: </th>	
+	<th style="text-align:right;">Lte Mtac: </th>					   
+	<th style="text-align:right;">Lte TimeStamp:</th>
+	
+	<th style="text-align:right;">Lte mCqi</th>					   
+	<th style="text-align:right;">Lte mRsrp </th>	
+	<th style="text-align:right;">Lte mRsrqc </th>	
+	<th style="text-align:right;">Lte mRssnr </th>	
+	<th style="text-align:right;">Lte mRsrq </th>	
+	<th style="text-align:right;">Lte mSignalstrength</th>					   
+	<th style="text-align:right;">Lte mTimingadvance </th>	
+    
+  </tr>
+  </thead>
+  <tbody>
+  	<%if @cells && @cells.size > 0 %>
+	  <% @cells.each do |c| %>
+	      <tr>
+	        <td><%= c.cell_device_id %></td>
+	        <td style="text-align:right;"><%= c.line1number %></td>
+	        <td style="text-align:right;"><%= c.metrics.size %></td>
+	        
+	        <% if c.metrics && c.metrics.size > 0%> 
+			<% c.metrics.each do |m| %>		
+	
+			  	<td style="text-align:right;"><%= m.id%></td>
+			    <td style="text-align:right;"><%= m.created_at.strftime("%a, %b %e %Y") %></td>
+			    <td style="text-align:right;"><%= m.updated_at.strftime("%a, %b %e %Y") %></td>
+			    <% if m.location_id %>
+					<td style="text-align:right;">Location mAccuracy: <%= Location.find(m.location_id).maccuracy %></p></td>
+					<td style="text-align:right;">Location mAltitude <%= Location.find(m.location_id).maltitude %></p></td>
+					<td style="text-align:right;">Location mDistance: <%= Location.find(m.location_id).mdistance %></p></td>
+					<td style="text-align:right;">Location mSpeed: <%= Location.find(m.location_id).mspeed %></p></td>
+					<td style="text-align:right;">Location mBearing: <%= Location.find(m.location_id).mbearing %></p></td>
+					<td style="text-align:right;">Location mLongitude: <%= Location.find(m.location_id).mlongitude %></p></td>
+					<td style="text-align:right;">Location mLatitude: <%= Location.find(m.location_id).mlatitude %></p></td>
+				<%else%>
+					<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+				<%end%>
+				<% if m.ping_id %>
+					<td style="text-align:right;"><%= Ping.find(m.ping_id).ping_avg %></td>
+					<td style="text-align:right;"><%= Ping.find(m.ping_id).ping_max %></td>
+					<td style="text-align:right;"><%= Ping.find(m.ping_id).host %></td>
+					<td style="text-align:right;"><%= Ping.find(m.ping_id).net %></td>
+					<td style="text-align:right;"><%= Ping.find(m.ping_id).output %></td>
+					<td style="text-align:right;"><%= Ping.find(m.ping_id).ping_percent_loss %></td>
+				<%else%>
+					<td></td><td></td><td></td><td></td><td></td><td></td>
+			    <%end%>
+			    
+			    
+			      <% i = 0 %>
+			      <% if m.lte_identities != nil %>
+			        <% m.lte_identities.each do |identity| %>
+				      <td>
+				      	 <%if identity %> 
+				         
+				          <td style="text-align:right;"><%= identity.mregistered %></td>					   
+						  <td style="text-align:right;"><%= identity.mci %></td>	
+						  <td style="text-align:right;"><%= identity.mmcc %></td>	
+						  <td style="text-align:right;"><%= identity.mmnc %></td>	
+						  <td style="text-align:right;"><%= identity.mpci %></td>	
+						  <td style="text-align:right;"><%= identity.mtac %></td>					   
+				          <td style="text-align:right;"><%= identity.mtimestamp %></td>				   
+					   <%else%>
+					   		<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+					   <%end%>
+				      	
+				      </td>
+						
+				      
+				      
+				      
+				    
+				  	<%end%>
+				<% else %>
+				  <td><p>No LTE IDENTITIES</p></td>	
+				<% end %>
+				
+				
+		    <% if m.lte_signal_strengths != nil %>
+		      <% m.lte_signal_strengths.each do |signal_strengths| %>
+		        
+		       
+		        <%if signal_strengths %>   
+		                    
+		          <td style="text-align:right;"><%= signal_strengths.mcqi %></p></td>					   
+				  <td style="text-align:right;"><%= signal_strengths.mrsrp %></p></td>
+				  <td style="text-align:right;"><%= signal_strengths.mrsrqc %></p></td>
+				  <td style="text-align:right;"><%= signal_strengths.mrssnr %></p></td>
+				  <td style="text-align:right;"><%= signal_strengths.mrsrq %></p></td>
+				  <td style="text-align:right;"><%= signal_strengths.msignalstrength %></td>			   
+		          <td style="text-align:right;"><%= signal_strengths.mtimingadvance%></td>				   
+			   <%else%>
+				  <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			   <%end%>
+			    
+			  <%end%>
+			<% else %>
+			  <td><p>No LTE Signal Strengths</p></td>
+			<% end %>
+				
+				
+			<% end %>
+	       <% end %> 
+	      </tr>
+	  <% end %>
+  <%else%>
+  "No Cells"
+ <% end %>
+</tbody>
+</table>
+
+
+
+
+
+<html>
+  
+  <table>
+  	
+  	
+  	<th>Device Id</th>
+  	<th>Line1number</th>
+  	<th>Metric Id</th>
+  	
+  
+  	
+	  <tr>
+	   
+	    <% @cells.each do |c| %>
+	      <td> <p>Device Id: <%= c.cell_device_id %></p></td> 
+	      <td> <p>Phone Number: <%= c.line1number %></p></td> 	    
+	  
+		<% if c.metrics && c.metrics.size > 0%> 
+		<% c.metrics.each do |m| %>		
+
+		  	<td><p>Metric Id: <%= m.id%></p></td>
+		    <td><p>Created Time: <%= m.created_at.strftime("%a, %b %e %Y") %></p></td>
+		    <td><p>Updated Time: <%= m.updated_at.strftime("%a, %b %e %Y") %></p></td>
+		    <% if m.location_id %>
+				<td><p>Location mAccuracy: <%= Location.find(m.location_id).maccuracy %></p></td>
+				<td><p>Location mAltitude <%= Location.find(m.location_id).maltitude %></p></td>
+				<td><p>Location mDistance: <%= Location.find(m.location_id).mdistance %></p></td>
+				<td><p>Location mSpeed: <%= Location.find(m.location_id).mspeed %></p></td>
+				<td><p>Location mBearing: <%= Location.find(m.location_id).mbearing %></p></td>
+				<td><p>Location mLongitude: <%= Location.find(m.location_id).mlongitude %></p></td>
+				<td><p>Location mLatitude: <%= Location.find(m.location_id).mlatitude %></p></td>
+			<%else%>
+				<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+			<%end%>
+			<% if m.ping_id %>
+				<td><p>Ping avg: <%= Ping.find(m.ping_id).ping_avg %></p></td>
+				<td><p>Ping max: <%= Ping.find(m.ping_id).ping_max %></p></td>
+				<td><p>Ping host: <%= Ping.find(m.ping_id).host %></p></td>
+				<td><p>Ping net: <%= Ping.find(m.ping_id).net %></p></td>
+				<td><p>Ping output: <%= Ping.find(m.ping_id).output %></p></td>
+				<td><p>Ping percent loss: <%= Ping.find(m.ping_id).ping_percent_loss %></p></td>
+			<%else%>
+				<td></td><td></td><td></td><td></td><td></td><td></td>
+		    <%end%>
+		    
+		      <% if m.lte_identities != nil %>
+		        <% m.lte_identities.each do |identity| %>
+			      <tr>
+			        
+			         
+			          <td><p>Lte mRegistered: <%= identity.mregistered %></p></td>					   
+					  <td><p>Lte Mci: <%= identity.mci %></p></td>	
+					  <td><p>Lte Mmcc: <%= identity.mmcc %></p></td>	
+					  <td><p>Lte Mmnc: <%= identity.mmnc %></p></td>	
+					  <td><p>Lte Mpci: <%= identity.mpci %></p></td>	
+					  <td><p>Lte Mtac: <%= identity.mtac %></p></td>					   
+			          <td><p>Lte TimeStamp: <%= identity.mtimestamp %></p></td>				   
+				   
+			      </tr>
+			  	<%end%>
+			<% else %>
+			  <td><p>No LTE IDENTITIES</p></td>	
+			<% end %>
+		 
+		  
+		 
+		    <% if m.lte_signal_strengths != nil %>
+		      <% m.lte_signal_strengths.each do |signal_strengths| %>
+		        
+		       
+		          
+		                    
+		          <td><p>Lte mCqi <%= signal_strengths.mcqi %></p></td>					   
+				  <td><p>Lte mRsrp <%= signal_strengths.mrsrp %></p></td>
+				  <td><p>Lte mRsrqc <%= signal_strengths.mrsrqc %></p></td>
+				  <td><p>Lte mRssnr <%= signal_strengths.mrssnr %></p></td>
+				  <td><p>Lte mRsrq <%= signal_strengths.mrsrq %></p></td>
+				  <td><p>Lte mSignalstrength <%= signal_strengths.msignalstrength %></p>	</td>			   
+		          <td><p>Lte mTimingadvance <%= signal_strengths.mtimingadvance%></p></td>				   
+			
+			    
+			  <%end%>
+			<% else %>
+			  <td><p>No LTE Signal Strengths</p></td>
+			<% end %>
+		
+		  
+		 
+		    <% if m.gsm_identities != nil %>
+		      <% m.gsm_identities.each do |gsmidentity| %>
+		    	
+		      
+		         
+		          <td><p>Gsm mRegistered: <%= gsmidentity.mregistered %></p></td>				   
+				  <td><p>Gsm Mcid: <%= gsmidentity.mcid %></p></td>
+				  <td><p>Gsm Mmcc: <%= gsmidentity.mmcc %></p></td>
+				  <td><p>Gsm Mmnc: <%= gsmidentity.mmnc %></p></td>
+				  <td><p>Gsm Mlac: <%= gsmidentity.mlac %></p></td>		   
+		          <td><p>Gsm TimeStamp: <%= gsmidentity.mtimestamp %></p></td>				   
+			   
+			   
+			  <%end%>
+			<% else %>
+			  <td><p>No Gsm IDENTITIES</p></td>
+			<% end %>
+		 
+		  
+		 
+		    <% if m.gsm_signal_strengths != nil %>
+		      <% m.gsm_signal_strengths.each do |gsm_signal_strengths| %>
+		       
+		                    
+		          <td><p>Gsm mSignalstrength <%= gsm_signal_strengths.msignalstrength %></p></td>				   
+				  <td><p>Gsm mBiterrorrate <%= gsm_signal_strengths.mbiterrorrate %></p></td>
+				 			   
+			  
+			  <%end%>
+			<% else %>
+			  <td><p>No GSM Signal Strengths</p></td>
+			<% end %>
+		  
+		  
+		  
+		    <% if m.wcdma_identities != nil %>
+		      <% m.wcdma_identities.each do |wcdm_identity| %>
+				
+		         
+		          <td><p>Wcdma mRegistered: <%= wcdm_identity.mregistered %></p>	</td>				   
+				  <td><p>Wcdma Mcid: <%= wcdm_identity.mcid %></p></td>
+				  <td><p>Wcdma Mmcc: <%= wcdm_identity.mmcc %></p></td>
+				  <td><p>Wcdma Mmnc: <%= wcdm_identity.mmnc %></p></td>
+				  <td><p>Wcdma Mlac: <%= wcdm_identity.mlac %></p></td>	
+				  <td><p>Wcdma Mpsc: <%= wcdm_identity.mpsc %></p></td>		   
+		          <td><p>Wcdma TimeStamp: <%= wcdm_identity.mtimestamp%></p></td>				   
+			  
+			  <%end%>
+			<% else %>
+			  <td><p>No Wcdma IDENTITIES</p></td>
+			<% end %>
+		 
+		  
+		  
+		    <% if m.cdma_identities != nil %>
+		      <% m.cdma_identities.each do |cdma_identity| %>
+				
+		         
+		          <td><p>Cdma mRegistered: <%= cdma_identity.mregistered %></p>	</td>				   
+				  <td><p>Cdma mSystemid: <%= cdma_identity.msystemid %></p></td>
+				  <td><p>Cdma mNetworkid: <%= cdma_identity.mnetworkid %></p></td>
+				  <td><p>Cdma mLongitude: <%= cdma_identity.mlongitude %></p></td>
+				  <td><p>Cdma mLatitude: <%= cdma_identity.mlatitude %></p></td>	
+				  <td><p>Cdma mBasestationid: <%= cdma_identity.mbasestationid %></p></td>		   
+		          <td><p>Cdma TimeStamp: <%= cdma_identity.mtimestamp%></p></td>				   
+			  
+			 
+			  <%end%>
+		    <% else %>
+			  <td><p>No Cdma IDENTITIES</p></td>
+			<% end %>
+		 
+		  
+		  
+		  
+		<% end %>
+	  
+	<% else %>
+	  <p>No Metrics</p>
+	<% end %>
+<% end %>
+</table>
+  
+	
+</html>
+
+
+<div id = "nav">
+    <button><%= link_to "Newest", api_v1_upload_report_path %></button>
+    <button><%= link_to "Previous #{@page} Cells", api_v1_upload_report_path(page: @page.to_i==0 ? @page : @page.to_i - 1) %></button>
+    <button><%= link_to "Next #{@page} Cells", api_v1_upload_report_path(page: @page.to_i + 1) %></button>
+</div>
+
+
+<%if @cells && @cells.size > 0 %>
+	  <% @cells.each do |c| %>
+	      
+	        <%= display_cell(c)%>
+	        
+	        <% if c.metrics && c.metrics.size > 0%> 
+		        	<% c.metrics.each do |m| %>
+						<%= display_metrics(m)%>	
+					    <%= display_location(m.location)%>
+					    <%= display_ping(m.ping)%>
+					    <% m.lte_identities.each do |lte_identity| %>
+					    	<%= display_lte_identities(lte_identity)%>
+					    <% end %>
+					     <% m.lte_signal_strengths.each do |lte_ss| %>
+					    	<%= display_lte_ss(lte_ss)%>
+					    <% end %>
+					    
+					    
+					    
+					    <% m.gsm_identities.each do |gsm_identity| %>
+					    	<%= display_gsm_identities(gsm_identity)%>
+					    <% end %>
+					     <% m.gsm_signal_strengths.each do |gsm_ss| %>
+					    	<%= display_gsm_ss(gsm_ss)%>
+					    <% end %>
+					    
+					    
+					    
+				    <% end %>
+			<% end %>
+	<% end %>	
+<% end %>
+<!-- 

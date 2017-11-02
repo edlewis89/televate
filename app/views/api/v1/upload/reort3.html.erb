@@ -1,0 +1,57 @@
+<div id = "nav">
+    <button><%= link_to "Newest", api_v1_upload_report_path %></button>
+    <button><%= link_to "Previous #{@page} Cells", api_v1_upload_report_path(page: @page.to_i==0 ? @page : @page.to_i - 1) %></button>
+    <button><%= link_to "Next #{@page} Cells", api_v1_upload_report_path(page: @page.to_i + 1) %></button>
+</div>
+
+<table style="width:500px">
+  <thead>
+  <tr>
+    <th>Device Id</th>
+    <th style="text-align:right;">Line1number</th>
+    <th style="text-align:right;">Metrics Count</th>
+    <th style="text-align:right;">Metric Id </th>
+    
+    
+    <th style="text-align:right;">Created Time</th>
+  	<th style="text-align:right;">Updated Time</th>
+  	
+  	<th style="text-align:right;">Cell Info</th> 	
+  	<th style="text-align:right;">Cell Location</th>
+  	<th style="text-align:right;">Cell Ping</th>
+  	
+    
+  </tr>
+  </thead>
+  <tbody>
+  	<%if @cells && @cells.size > 0 %>
+	  <% @cells.each do |c| %>
+	      <tr>
+	        <td><%= c.cell_device_id %></td>
+	        <td style="text-align:right;"><%= c.line1number %></td>
+	        <td style="text-align:right;"><%= c.metrics.size %></td>
+	        
+	        <% if c.metrics && c.metrics.size > 0%> 
+				<% c.metrics.each do |m| %>		
+	
+			  	<td style="text-align:right;"><%= m.id%></td>
+			    <td style="text-align:right;"><%= m.created_at.strftime("%a, %b %e %Y") %></td>
+			    <td style="text-align:right;"><%= m.updated_at.strftime("%a, %b %e %Y") %></td>
+			    <% if m.ingested_datum.size > 0 %>
+			    	<% m.ingested_datum.each do |data| %>	
+						
+						<td style="text-align:right;"><%= data.data %></p></td>
+					
+					<% end %>						
+				<% end %>
+				<%end %>
+	       <% end %> 
+	      </tr>
+	  <% end %>
+  <%else%>
+  "No Cells"
+ <% end %>
+</tbody>
+</table>
+
+</html>
