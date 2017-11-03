@@ -332,9 +332,9 @@ class API::V1::UploadController < ApplicationController
            
             puts "...Initialized Metric Object #{m.ingest_timestamp}"
             
-            m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.cell_info_object})
-            m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.cell_location_object}) 
-            m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.cell_ping_object}) 
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data})
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data}) 
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data}) 
             m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data})  
             puts "...added raw data #{m.ingested_datum.size}"
             

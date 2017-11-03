@@ -1,7 +1,7 @@
 
 module CellInfo
   class Dsl
-    attr_accessor :device_id, :line1number, :cell_info_object, :cell_location_object, :cell_ping_object, :ingested_json_data, :ingested_location_data, :ingested_ping_data, :ingested_netstate_data
+    attr_accessor :device_id, :line1number, :cell_info_object, :cell_location_object, :cell_ping_object, :cell_netstate_object, :ingested_json_data, :ingested_location_data, :ingested_ping_data, :ingested_netstate_data
     
     def initialize(cell_device_id="", cell_line1number="", cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_netstate_data={}, cell_timestamp={})      
       if cell_device_id && cell_device_id != ''       

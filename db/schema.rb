@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.integer "mmnc"
     t.integer "mpci"
     t.integer "mtac"
+    t.integer "mearfcn"
     t.boolean "mregistered"
     t.string "mtimestamp"
     t.datetime "created_at", null: false
@@ -146,12 +147,14 @@ ActiveRecord::Schema.define(version: 20171103012618) do
   end
 
   create_table "metrics", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "network_state_id"
     t.bigint "location_id"
     t.bigint "ping_id"
     t.datetime "ingest_timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["location_id"], name: "index_metrics_on_location_id", unique: true
+    t.index ["network_state_id"], name: "index_metrics_on_network_state_id", unique: true
     t.index ["ping_id"], name: "index_metrics_on_ping_id", unique: true
   end
 
