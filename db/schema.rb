@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171013023715) do
+ActiveRecord::Schema.define(version: 20171103012618) do
 
   create_table "cdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "mbasestationid"
@@ -163,6 +163,12 @@ ActiveRecord::Schema.define(version: 20171013023715) do
   create_table "metrics_wcdma_signal_strengths", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "wcdma_signal_strength_id", null: false
     t.bigint "metric_id", null: false
+  end
+
+  create_table "network_states", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "net"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "pings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

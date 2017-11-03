@@ -1,22 +1,25 @@
 
 module CellInfo
   class Dsl
-    attr_accessor :device_id, :line1number, :cell_info_object, :cell_location_object, :cell_ping_object, :ingested_json_data, :ingested_location_data,:ingested_ping_data
+    attr_accessor :device_id, :line1number, :cell_info_object, :cell_location_object, :cell_ping_object, :ingested_json_data, :ingested_location_data, :ingested_ping_data, :ingested_netstate_data
     
-    def initialize(cell_device_id="", cell_line1number="", cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_timestamp={})      
+    def initialize(cell_device_id="", cell_line1number="", cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_netstate_data={}, cell_timestamp={})      
       if cell_device_id && cell_device_id != ''       
         @device_id = cell_device_id
         @line1number = cell_line1number if cell_line1number && cell_line1number != ''   
         @ingested_json_data = cell_info_data  if cell_info_data && !cell_info_data.empty?  
         @ingested_location_data = cell_location_data  if cell_location_data && !cell_location_data.empty?     
         @ingested_ping_data = cell_ping_data  if cell_ping_data && !cell_ping_data.empty? 
+        @ingested_netstate_data = cell_netstate_data  if cell_netstate_data && !cell_netstate_data.empty?
         puts "----------->Parsed success ping #{@cell_ping_object.inspect}" if cell_ping_data && !cell_ping_data.empty?
         puts "----------->Parsed success location #{@cell_location_object.inspect}" if cell_location_data && !cell_location_data.empty?
-        puts "----------->Parsed success cell info #{@cell_info_object.inspect}" if cell_info_data && !cell_info_data.empty?       
+        puts "----------->Parsed success cell info #{@cell_info_object.inspect}" if cell_info_data && !cell_info_data.empty?
+        puts "----------->Parsed success netstate info #{@ingested_netstate_data.inspect}" if cell_netstate_data && !cell_netstate_data.empty?       
         begin
           @cell_info_object = JSON.parse(@ingested_json_data, object_class: OpenStruct) if @ingested_json_data && !@ingested_json_data.empty?
           @cell_location_object = JSON.parse(@ingested_location_data, object_class: OpenStruct) if @ingested_location_data && !@ingested_location_data.empty?
           @cell_ping_object = JSON.parse(@ingested_ping_data, object_class: OpenStruct) if @ingested_ping_data && !@ingested_ping_data.empty?
+          @cell_netstate_object = JSON.parse(@ingested_netstate_data, object_class: OpenStruct) if @ingested_netstate_data && !@ingested_netstate_data.empty?
           
           true
         rescue JSON::ParserError => e

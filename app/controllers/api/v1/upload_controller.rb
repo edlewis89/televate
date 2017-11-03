@@ -51,9 +51,10 @@ class API::V1::UploadController < ApplicationController
       conditions[:cellinfo] = params[:cellinfo] 
       conditions[:location] = params[:location]   
       conditions[:ping] = params[:ping] 
+      conditions[:network_state] = params[:network_state] 
       conditions[:timestamp] = params[:timestamp] 
       #cell_device_id="", cell_line1number="", cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_timestamp={}       
-      dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:line1number], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:timestamp])      
+      dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:line1number], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:network_state], conditions[:timestamp])      
       if dsl 
         if extract(dsl)                 
           success_upload(conditions)
@@ -133,6 +134,7 @@ class API::V1::UploadController < ApplicationController
           m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data})
           m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data})
           m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data})  
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data})  
           puts "...added raw data #{m.ingested_datum.size}"
           
           ####################################################
@@ -167,6 +169,25 @@ class API::V1::UploadController < ApplicationController
             puts "...ingest_location_hash parse #{ingest_location_hash}" 
             location.update_attributes(ingest_location_hash)
             m.location_id = location.id
+            
+          end
+          
+          ####################################################
+          #  Net State
+          #
+          #################################################### 
+          if dsl.cell_netstate_object && !dsl.cell_netstate_object.empty?
+            puts "...adding netstate data #{dsl.cell_netstate_object}" unless dsl.cell_netstate_object.nil?
+            netState = NetworkState.new()
+            ingest_netstate_hash ={}
+            netstate_hash={}
+            
+            netstate_hash = dsl.cell_netstate_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
+            puts "...net state parse #{netstate_hash}" 
+            ingest_netstate_hash = netstate_hash.select{|k, v| ingest_netstate_hash[k.downcase]=v if netState.respond_to?k.downcase.to_s} 
+            puts "...ingest_netstate_hash parse #{ingest_netstate_hash}" 
+            netState.update_attributes(ingest_netstate_hash)
+            m.network_state_id = netState.id
             
           end
           
@@ -314,6 +335,7 @@ class API::V1::UploadController < ApplicationController
             m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.cell_info_object})
             m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.cell_location_object}) 
             m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.cell_ping_object}) 
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data})  
             puts "...added raw data #{m.ingested_datum.size}"
             
             ####################################################
@@ -346,6 +368,25 @@ class API::V1::UploadController < ApplicationController
               location.update_attributes(ingest_location_hash)
               m.location_id = location.id
               puts "...ingest location data"
+            end
+            
+            ####################################################
+            #  Net State
+            #
+            #################################################### 
+            if dsl.cell_netstate_object && !dsl.cell_netstate_object.empty?
+              puts "...adding netstate data #{dsl.cell_netstate_object}" unless dsl.cell_netstate_object.nil?
+              netState = NetworkState.new()
+              ingest_netstate_hash ={}
+              netstate_hash={}
+              
+              netstate_hash = dsl.cell_netstate_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
+              puts "...net state parse #{netstate_hash}" 
+              ingest_netstate_hash = netstate_hash.select{|k, v| ingest_netstate_hash[k.downcase]=v if netState.respond_to?k.downcase.to_s} 
+              puts "...ingest_netstate_hash parse #{ingest_netstate_hash}" 
+              netState.update_attributes(ingest_netstate_hash)
+              m.network_state_id = netState.id
+              
             end
             
             ####################################################
@@ -494,7 +535,7 @@ class API::V1::UploadController < ApplicationController
 
   def cell_info_params
     # whitelist params
-    params.permit(:device_id, :cellinfo, :location, :ping, :timestamp, :line1number, :format)
+    params.permit(:device_id, :cellinfo, :location, :ping, :network_state, :line1number, :timestamp, :format)
   end
 
   def set_cell_info
