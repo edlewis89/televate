@@ -2,7 +2,7 @@ class CreateNetworkStates < ActiveRecord::Migration[5.1]
   def change
     create_table :network_states do |t|
       t.string :network_type
-      t.integer :system_timestamp_millis
+      t.integer :system_timestamp_millis, limit=>8
       t.string :network_state
 
       t.timestamps
