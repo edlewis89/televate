@@ -4,7 +4,7 @@ class CreateMetrics < ActiveRecord::Migration[5.1]
       t.belongs_to :network_state, index: { unique: true }
       t.belongs_to :location, index: { unique: true } 
       t.belongs_to :ping, index: { unique: true } 
-      t.integer :ingest_timestamp, limit => 8
+      t.integer :ingest_timestamp, :limit => 8
       t.timestamps
       
       #t.belongs_to :cell_identity_lte, index: true

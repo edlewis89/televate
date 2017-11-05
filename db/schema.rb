@@ -150,7 +150,7 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.bigint "network_state_id"
     t.bigint "location_id"
     t.bigint "ping_id"
-    t.datetime "ingest_timestamp"
+    t.bigint "ingest_timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["location_id"], name: "index_metrics_on_location_id", unique: true
@@ -169,7 +169,9 @@ ActiveRecord::Schema.define(version: 20171103012618) do
   end
 
   create_table "network_states", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string "net"
+    t.string "network_type"
+    t.bigint "system_timestamp_millis"
+    t.string "network_state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -181,7 +183,10 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.integer "ping_min"
     t.string "host"
     t.string "net"
+    t.string "ip"
     t.text "output"
+    t.datetime "ping_start_timestamp"
+    t.boolean "pinged"
     t.decimal "ping_percent_loss", precision: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
