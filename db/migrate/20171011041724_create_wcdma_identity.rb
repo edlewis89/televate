@@ -8,7 +8,7 @@ class CreateWcdmaIdentity < ActiveRecord::Migration[5.1]
       t.integer :mlac
       t.integer :mpsc
       t.boolean :mregistered
-      t.string :mtimestamp
+      t.integer :mtimestamp, :limit => 8
       t.timestamps
     end
   end

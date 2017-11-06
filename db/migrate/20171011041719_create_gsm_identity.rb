@@ -7,7 +7,7 @@ class CreateGsmIdentity < ActiveRecord::Migration[5.1]
       t.integer :mmnc
       t.integer :mlac
       t.boolean :mregistered
-      t.string :mtimestamp
+      t.integer :mtimestamp, :limit => 8
       t.timestamps
     end
   end

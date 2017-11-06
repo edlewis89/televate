@@ -8,7 +8,7 @@ class CreateCdmaIdentity < ActiveRecord::Migration[5.1]
       t.integer :mnetworkid
       t.integer :msystemid
       t.boolean :mregistered
-      t.string :mtimestamp
+      t.integer :mtimestamp,:limit => 8
       
       t.timestamps
     end
