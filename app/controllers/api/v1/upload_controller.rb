@@ -144,15 +144,10 @@ class API::V1::UploadController < ApplicationController
             pp = PingParser.new(output)  
                
             if pp       
-              ingest_ping_hash=ping_hash.merge(pp.to_h)                    
-              #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
-              puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
-              #begin
-                ping.update_attributes(ingest_ping_hash)
-                m.ping_id = ping.id
-              #rescue =>e
-                #puts "############### ingest ping error #{e}"
-               end                                                            
+              ingest_ping_hash=ping_hash.merge(pp.to_h)                                     
+              puts "...ingest_ping_hash parse #{ingest_ping_hash}"             
+              ping.update_attributes(ingest_ping_hash)
+              m.ping_id = ping.id                                                                       
             end  
           end
           #puts ingest_ping_hash
@@ -358,18 +353,12 @@ class API::V1::UploadController < ApplicationController
                 pp = PingParser.new(output)  
                
                 if pp       
-                  ingest_ping_hash=ping_hash.merge(pp.to_h)                    
-                  #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
-                  puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
-                  #begin
-                    ping.update_attributes(ingest_ping_hash)
-                    m.ping_id = ping.id
-                  #rescue =>e
-                    #puts "############### ingest ping error #{e}"
-                  #end                                                            
+                  ingest_ping_hash=ping_hash.merge(pp.to_h)                                           
+                  puts "...ingest_ping_hash parse #{ingest_ping_hash}"                  
+                  ping.update_attributes(ingest_ping_hash)
+                  m.ping_id = ping.id                                                                         
                 end  
-              end
-                            
+              end                            
             end
             ####################################################
             #  LOCATION
