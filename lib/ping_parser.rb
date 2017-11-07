@@ -1,5 +1,3 @@
-require 'regex'
-
 module Ping
   class Parser
     attr_accessor :output, :ping_min, :ping_avg, :ping_max, :pkt_loss, :ttl, :time
