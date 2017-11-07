@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.integer "mnetworkid"
     t.integer "msystemid"
     t.boolean "mregistered"
-    t.string "mtimestamp"
+    t.bigint "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.integer "mmnc"
     t.integer "mlac"
     t.boolean "mregistered"
-    t.string "mtimestamp"
+    t.bigint "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 20171103012618) do
 
   create_table "gsm_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "mbiterrorrate"
-    t.integer "msignalstrength"
+    t.bigint "msignalstrength"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -135,8 +135,8 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.integer "mrsrqc"
     t.integer "mrssnr"
     t.integer "mrsrq"
-    t.integer "msignalstrength"
-    t.string "mtimingadvance"
+    t.bigint "msignalstrength"
+    t.bigint "mtimingadvance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -181,13 +181,15 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.integer "ping_avg"
     t.integer "ping_max"
     t.integer "ping_min"
+    t.integer "ttl"
+    t.integer "time"
     t.string "host"
     t.string "net"
     t.string "ip"
     t.text "output"
     t.datetime "ping_start_timestamp"
     t.boolean "pinged"
-    t.decimal "ping_percent_loss", precision: 2
+    t.decimal "pkt_loss", precision: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["metric_id"], name: "index_pings_on_metric_id", unique: true
@@ -200,14 +202,14 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.integer "mlac"
     t.integer "mpsc"
     t.boolean "mregistered"
-    t.string "mtimestamp"
+    t.bigint "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "wcdma_signal_strengths", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "mbiterrorrate"
-    t.integer "msignalstrength"
+    t.bigint "msignalstrength"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

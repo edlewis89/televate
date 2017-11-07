@@ -16,7 +16,7 @@ class CreatePings < ActiveRecord::Migration[5.1]
       t.text :output
       t.datetime :ping_start_timestamp
       t.boolean :pinged
-      t.decimal :ping_percent_loss, :precision => 2
+      t.decimal :pkt_loss, :precision => 2
 
       t.timestamps
     end

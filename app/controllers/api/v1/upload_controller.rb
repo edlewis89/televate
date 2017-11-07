@@ -1,4 +1,5 @@
 require 'dsl'
+require 'ping_parser.rb'
 
 class API::V1::UploadController < ApplicationController
   #before_action :set_page, :only => [:report]
@@ -21,17 +22,6 @@ class API::V1::UploadController < ApplicationController
   
   def report
     @cells = Cell.paginate(:page => set_page, :per_page => CELLS_PER_PAGE).order("created_at ASC") 
-    #@cells = Cell.limit(CELLS_PER_PAGE).offset(@page * CELLS_PER_PAGE).order("created_at ASC") 
-   
-    
-    #if @cells.size > 0
-    #  @metrics = @cells.metrics     
-    #end
-    #respond_to do |format|
-    #  format.html { render :partial => "report", notice: 'Task was successfully destroyed.' }
-    #  format.json { head :no_content }
-    #end
-    
   end
 
   # POST /create
@@ -41,7 +31,8 @@ class API::V1::UploadController < ApplicationController
     # column 2: line1number
     # columns 3: cellInfo
     # columns 4: location
-    # columns 5: timestamp
+    # columns 5: network_state  
+    # columns 6: timestamp
     
     if cell_info_params
       
@@ -146,12 +137,19 @@ class API::V1::UploadController < ApplicationController
           ingest_ping_hash ={}
           ping_hash = {}          
           ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h if !dsl.cell_ping_object.nil?
-          pp = Ping::Parser.new(ping_hash[:output])          
-          ingest_ping_hash=pp.to_h unless ping_hash                 
-          #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase} unless ping_hash       
-          puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
-          ping.update_attributes(ingest_ping_hash)
-          m.ping_id = ping.id
+          puts "################ #{ping_hash.inspect }"             
+          pp = PingParser.new(ping_hash[:output])  
+          if pp       
+            ingest_ping_hash=ping_hash.merge(pp.to_h)                    
+            #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
+            puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
+            begin
+              ping.update_attributes(ingest_ping_hash)
+              m.ping_id = ping.id
+            rescue =>e
+              puts "############### ingest ping error #{e}"
+            end                                                            
+          end
           #puts ingest_ping_hash
           #m.create_ping(ingest_ping_hash)
           end
@@ -349,12 +347,20 @@ class API::V1::UploadController < ApplicationController
               ingest_ping_hash ={}
               ping_hash = {}                           
               ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h if !dsl.cell_ping_object.nil?
-              pp = Ping::Parser.new(ping_hash[:output])          
-              ingest_ping_hash=pp.to_h unless ping_hash                   
-              #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
-              puts "...ingest_ingest_hash parse #{ingest_ping_hash}" 
-              ping.update_attributes(ingest_ping_hash)
-              m.ping_id = ping.id
+              
+              pp = PingParser.new(ping_hash[:output])  
+             
+              if pp       
+                ingest_ping_hash=ping_hash.merge(pp.to_h)                    
+                #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
+                puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
+                begin
+                  ping.update_attributes(ingest_ping_hash)
+                  m.ping_id = ping.id
+                rescue =>e
+                  puts "############### ingest ping error #{e}"
+                end                                                            
+              end                
             end
             ####################################################
             #  LOCATION
