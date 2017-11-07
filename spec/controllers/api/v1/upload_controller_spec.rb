@@ -197,6 +197,36 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
     
   end
   
+  describe "parse ping data " do
+    let(:cellnetstateinfo) {{net:"MOBILE"}}
+    
+    let(:cellpinginfo) {{host:"8.8.8.8",net:"MOBILE",output:"PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=54 time=187 ms\n\n--- 8.8.8.8 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min\/avg\/max\/mdev = 187.489\/187.489\/187.489\/0.000 ms\n",pinged:true}}
+    #let(:cellpinginfo) {{host:"",net:"",output:"",pinged:true}}
+
+
+    let(:cellSignalStrengthCdma) {{mCdmaDbm:2147483647,mCdmaEcio:-117,mEvdoDbm:-13,mEvdoEcio:2147483647,mEvdoSnr:12}}
+    let(:cellIdentityCdma) {{mBasestationId:12529157,mLatitude:310,mLongitude:260,mNetworkId:375,mSystemId:20241}}
+    let(:cellSignalStengthLte) {{mCqi:2147483647,mRsrp:-117,mRsrq:-13,mRssnr:2147483647,mSignalStrength:12,mTimingAdvance:2147483647}}
+    let(:cellIdentityLte) {{mCi:12529157,mMcc:310,mMnc:260,mPci:375,mTac:20241}}
+    let(:cell_info) {[{mCellIdentityLte: cellIdentityLte, mCellSignalStrengthLte: cellSignalStengthLte, mCellIdentityCdma: cellIdentityCdma, mCellSignalStrengthCdma: cellSignalStrengthCdma}]}    
+    let(:device_id) {'1'}
+    let(:line1number) {'7039692078'}
+    let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :cellinfo=>cell_info.to_json, :ping=>cellpinginfo.to_json, :network_state=>cellnetstateinfo.to_json}}    
+   
+    subject { cellinfo }
+    subject { device_id }
+    subject {json}
+    
+  
+    it "should create raw ping info" do 
+      post :create, params: json        
+      c = Cell.where(:cell_device_id => '1').first
+      expect(c.metrics.count).to eq 1
+      expect(c.metrics[0].ingested_datum[2].name).to eq "cell_ping"
+    end
+   
+  end
+  
   
 end
  

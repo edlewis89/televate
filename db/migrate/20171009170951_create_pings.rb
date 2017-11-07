@@ -8,6 +8,8 @@ class CreatePings < ActiveRecord::Migration[5.1]
       t.integer :ping_avg
       t.integer :ping_max
       t.integer :ping_min
+      t.integer :ttl
+      t.integer :time
       t.string :host
       t.string :net
       t.string :ip
