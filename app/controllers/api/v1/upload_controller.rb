@@ -137,18 +137,23 @@ class API::V1::UploadController < ApplicationController
           ingest_ping_hash ={}
           ping_hash = {}          
           ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h if !dsl.cell_ping_object.nil?
-          puts "################ #{ping_hash.inspect }"             
-          pp = PingParser.new(ping_hash[:output])  
-          if pp       
-            ingest_ping_hash=ping_hash.merge(pp.to_h)                    
-            #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
-            puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
-            begin
-              ping.update_attributes(ingest_ping_hash)
-              m.ping_id = ping.id
-            rescue =>e
-              puts "############### ingest ping error #{e}"
-            end                                                            
+          #puts "################ #{ping_hash.inspect }" 
+          #puts ".......... ping output #{ping_hash[:output]}"            
+          output = ping_hash[:output] 
+          if output   
+            pp = PingParser.new(output)  
+               
+            if pp       
+              ingest_ping_hash=ping_hash.merge(pp.to_h)                    
+              #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
+              puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
+              #begin
+                ping.update_attributes(ingest_ping_hash)
+                m.ping_id = ping.id
+              #rescue =>e
+                #puts "############### ingest ping error #{e}"
+               end                                                            
+            end  
           end
           #puts ingest_ping_hash
           #m.create_ping(ingest_ping_hash)
@@ -347,20 +352,24 @@ class API::V1::UploadController < ApplicationController
               ingest_ping_hash ={}
               ping_hash = {}                           
               ping_hash = dsl.cell_ping_object.each_pair.map{|k, v| [k.downcase, v]}.to_h if !dsl.cell_ping_object.nil?
-              
-              pp = PingParser.new(ping_hash[:output])  
-             
-              if pp       
-                ingest_ping_hash=ping_hash.merge(pp.to_h)                    
-                #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
-                puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
-                begin
-                  ping.update_attributes(ingest_ping_hash)
-                  m.ping_id = ping.id
-                rescue =>e
-                  puts "############### ingest ping error #{e}"
-                end                                                            
-              end                
+              #puts "################ #{ping_hash[:output].inspect }" 
+              output = ping_hash[:output] 
+              if output   
+                pp = PingParser.new(output)  
+               
+                if pp       
+                  ingest_ping_hash=ping_hash.merge(pp.to_h)                    
+                  #ingest_ping_hash=ping_hash.select{|k, v| ingest_ping_hash[k.downcase.to_sym]=v if ping.respond_to?k.downcase}       
+                  puts "...ingest_ping_hash parse #{ingest_ping_hash}" 
+                  #begin
+                    ping.update_attributes(ingest_ping_hash)
+                    m.ping_id = ping.id
+                  #rescue =>e
+                    #puts "############### ingest ping error #{e}"
+                  #end                                                            
+                end  
+              end
+                            
             end
             ####################################################
             #  LOCATION
@@ -372,9 +381,9 @@ class API::V1::UploadController < ApplicationController
               ingest_location_hash ={}
               location_hash={}
               location_hash = dsl.cell_location_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
-              #puts "...location parse #{location_hash}" 
+              puts "...location parse #{location_hash}" 
               ingest_location_hash = location_hash.select{|k, v| ingest_location_hash[k.downcase]=v if location.respond_to?k.downcase.to_s}  
-              #puts "...ingest_location_hash parse #{ingest_location_hash}" 
+              puts "...ingest_location_hash parse #{ingest_location_hash}" 
               location.update_attributes(ingest_location_hash)
               m.location_id = location.id
               puts "...ingest location data"

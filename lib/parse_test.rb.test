@@ -39,11 +39,12 @@ end
 output = "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=54 time=187 ms\n\n--- 8.8.8.8 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min\/avg\/max\/mdev = 187.489\/123.489\/187.000\/0.000 ms\n"
 
 pp = Ping::Parser.new(output)
-puts pp.ping_avg
-puts pp.ping_max
-puts pp.ping_min
-puts pp.pkt_loss
-puts pp.ttl
-puts pp.time
+puts "ping max #{pp.ping_max}"
+puts "ping avg #{pp.ping_avg}"
+puts "ping min #{pp.ping_min}"
+puts "ping loss #{pp.pkt_loss}"
+puts "ping ttl #{pp.ttl}"
+puts "ping time #{pp.ttl}"
+
 
 puts pp.to_h

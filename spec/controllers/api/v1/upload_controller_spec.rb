@@ -167,7 +167,7 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
   end
   
   describe "update network state data " do
-    let(:cellnetstateinfo) {{net:"MOBILE"}}
+    let(:cellnetstateinfo) {{network_type:"MOBILE"}}
     
     let(:cellpinginfo) {{host:"8.8.8.8",net:"MOBILE",output:"PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=54 time=187 ms\n\n--- 8.8.8.8 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min\/avg\/max\/mdev = 187.489\/187.489\/187.489\/0.000 ms\n",pinged:true}}
     #let(:cellpinginfo) {{host:"",net:"",output:"",pinged:true}}
@@ -197,32 +197,30 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
     
   end
   
-  describe "parse ping data " do
-    let(:cellnetstateinfo) {{net:"MOBILE"}}
+  describe "all cell info " do
     
-    let(:cellpinginfo) {{host:"8.8.8.8",net:"MOBILE",output:"PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=54 time=187 ms\n\n--- 8.8.8.8 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min\/avg\/max\/mdev = 187.489\/187.489\/187.489\/0.000 ms\n",pinged:true}}
-    #let(:cellpinginfo) {{host:"",net:"",output:"",pinged:true}}
-
-
-    let(:cellSignalStrengthCdma) {{mCdmaDbm:2147483647,mCdmaEcio:-117,mEvdoDbm:-13,mEvdoEcio:2147483647,mEvdoSnr:12}}
-    let(:cellIdentityCdma) {{mBasestationId:12529157,mLatitude:310,mLongitude:260,mNetworkId:375,mSystemId:20241}}
-    let(:cellSignalStengthLte) {{mCqi:2147483647,mRsrp:-117,mRsrq:-13,mRssnr:2147483647,mSignalStrength:12,mTimingAdvance:2147483647}}
-    let(:cellIdentityLte) {{mCi:12529157,mMcc:310,mMnc:260,mPci:375,mTac:20241}}
-    let(:cell_info) {[{mCellIdentityLte: cellIdentityLte, mCellSignalStrengthLte: cellSignalStengthLte, mCellIdentityCdma: cellIdentityCdma, mCellSignalStrengthCdma: cellSignalStrengthCdma}]}    
-    let(:device_id) {'1'}
-    let(:line1number) {'7039692078'}
-    let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :cellinfo=>cell_info.to_json, :ping=>cellpinginfo.to_json, :network_state=>cellnetstateinfo.to_json}}    
    
-    subject { cellinfo }
-    subject { device_id }
+     let(:cellinfo){[{mCellIdentityLte:{mCi:30025238,mEarfcn:0,mMcc:311,mMnc:480,mPci:271,mTac:29952},mCellSignalStrengthLte:{mCqi:2147483647,mRsrp:-91,mRsrq:-8,mRssnr:2147483647,mSignalStrength:26,mTimingAdvance:4},mRegistered:true,mTimeStamp:52807148360559,mTimeStampType:3}]}     
+     let(:ping){{host:"8.8.8.8",net:"MOBILE",output:"PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=54 time=30.5 ms\\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=54 time=28.7 ms\\n\\n--- 8.8.8.8 ping statistics ---\\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\\nrtt min/avg/max/mdev \\u003d 28.726/29.644/30.562/0.918 ms\\n",ping_start_timestamp:1510064393916,pinged:true}}     
+     let(:network_state){{network_type:"MOBILE",system_timestamp_millis:1510064393899}}
+     let(:location) {{mAccuracy:329.189,mAltitude:133.0,mBearing:0.0,mElapsedRealtimeNanos:96183916307734,mExtras:{mFlags:1537,mParcelledData:{mNativePtr:540096934048,mNativeSize:0,mOwnsNativeParcelObject:true}},mFieldsMask:11,mLatitude:38.91507764,mLongitude:-77.23140876,mProvider:"gps",mSpeed:0.0,mTime:1510064183000}}
+     let(:line1number){'7034051467'}
+     let(:device_id) {'355300071073642'}
+    
+      
+    
+   
+    let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :location=>location.to_json, :cellinfo=>cellinfo.to_json, :ping=>ping.to_json, :network_state=>network_state.to_json}}    
+   
+   
     subject {json}
     
   
-    it "should create raw ping info" do 
+    it "should create a metric" do 
       post :create, params: json        
-      #c = Cell.where(:cell_device_id => '1').first
-      #expect(c.metrics.count).to eq 1
-      #expect(c.metrics[0].ingested_datum[2].name).to eq "cell_ping"
+      c = Cell.where(:cell_device_id => '355300071073642').first
+      expect(c.metrics.count).to eq 1
+      expect(c.metrics[0].ping.ping_avg).to eq 29.644
     end
    
   end

@@ -1,13 +1,13 @@
 example_id                                                 | status  | run_time        |
 ---------------------------------------------------------- | ------- | --------------- |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:1:1] | passed  | 0.00574 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:1:2] | passed  | 0.00438 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:1:3] | passed  | 0.05183 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:1:4] | passed  | 0.04601 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:2:1] | passed  | 0.41051 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:2:2] | passed  | 0.0916 seconds  |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:3:1] | passed  | 0.11838 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:4:1] | passed  | 0.05271 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:5:1] | passed  | 0.08941 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:6:1] | passed  | 0.05016 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:1] | passed  | 0.00538 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:2] | passed  | 0.00406 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:3] | passed  | 0.04666 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:4] | passed  | 0.0459 seconds  |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:2:1] | passed  | 0.09375 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:2:2] | passed  | 0.09993 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:3:1] | passed  | 0.1141 seconds  |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:4:1] | passed  | 0.14306 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:5:1] | passed  | 0.05509 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:6:1] | passed  | 0.31632 seconds |
 ./spec/models/network_state_spec.rb[1:1]                   | pending | 0.00001 seconds |

@@ -178,18 +178,18 @@ ActiveRecord::Schema.define(version: 20171103012618) do
 
   create_table "pings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "metric_id"
-    t.integer "ping_avg"
-    t.integer "ping_max"
-    t.integer "ping_min"
-    t.integer "ttl"
-    t.integer "time"
+    t.decimal "ping_avg", precision: 6, scale: 3
+    t.decimal "ping_max", precision: 6, scale: 3
+    t.decimal "ping_min", precision: 6, scale: 3
+    t.decimal "ttl", precision: 4, scale: 2
+    t.decimal "time", precision: 4, scale: 2
     t.string "host"
     t.string "net"
     t.string "ip"
     t.text "output"
-    t.datetime "ping_start_timestamp"
+    t.bigint "ping_start_timestamp"
     t.boolean "pinged"
-    t.decimal "pkt_loss", precision: 2
+    t.decimal "pkt_loss", precision: 6, scale: 3
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["metric_id"], name: "index_pings_on_metric_id", unique: true
