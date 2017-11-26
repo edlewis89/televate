@@ -9,8 +9,15 @@ class CreateLteIdentity < ActiveRecord::Migration[5.1]
       t.integer :mtac
       t.integer :mearfcn
       t.boolean :mregistered
-      t.integer :mtimestamp, :limit => 8
-      
+      t.integer :mcqi
+      t.integer :mrsrp
+      t.integer :mrsrqc
+      t.integer :mrssnr
+      t.integer :mrsrq
+      t.integer :msignalstrength, :limit => 8
+      t.integer :mtimingadvance, :limit => 8      
+      t.datetime :mtimestamp
+     
       t.timestamps
     end
   end

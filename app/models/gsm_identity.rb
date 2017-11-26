@@ -1,4 +1,5 @@
 class GsmIdentity < ApplicationRecord
+  #has_many :metrics, as: :metricable
   has_many :gsm_identities_metrics, dependent: :destroy, :class_name => 'GsmIdentitiesMetrics'
   has_many :metrics, through: :gsm_identities_metrics
 

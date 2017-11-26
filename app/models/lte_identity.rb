@@ -1,4 +1,5 @@
 class LteIdentity < ApplicationRecord
+  #has_many :metrics, as: :metricable
   has_many :lte_identities_metrics, dependent: :destroy, :class_name => 'LteIdentitiesMetrics'
   has_many :metrics, through: :lte_identities_metrics
   

@@ -21,10 +21,10 @@ module CellInfo
           @cell_location_object = JSON.parse(@ingested_location_data, object_class: OpenStruct) if @ingested_location_data && !@ingested_location_data.empty?
           @cell_ping_object = JSON.parse(@ingested_ping_data, object_class: OpenStruct) if @ingested_ping_data && !@ingested_ping_data.empty?
           @cell_netstate_object = JSON.parse(@ingested_netstate_data, object_class: OpenStruct) if @ingested_netstate_data && !@ingested_netstate_data.empty?
-          #puts "----------->Parsed success ping #{@cell_ping_object.inspect}" if cell_ping_data && !cell_ping_data.empty?
-          #puts "----------->Parsed success location #{@cell_location_object.inspect}" if cell_location_data && !cell_location_data.empty?
-          #puts "----------->Parsed success cell info #{@cell_info_object.inspect}" if cell_info_data && !cell_info_data.empty?
-          #puts "----------->Parsed success netstate info #{@ingested_netstate_data.inspect}" if cell_netstate_data && !cell_netstate_data.empty?       
+          puts "----------->Parsed success ping #{@cell_ping_object.inspect}" if cell_ping_data && !cell_ping_data.empty?
+          puts "----------->Parsed success location #{@cell_location_object.inspect}" if cell_location_data && !cell_location_data.empty?
+          puts "----------->Parsed success cell info #{@cell_info_object.inspect}" if cell_info_data && !cell_info_data.empty?
+          puts "----------->Parsed success netstate info #{@ingested_netstate_data.inspect}" if cell_netstate_data && !cell_netstate_data.empty?       
         
           true
         rescue JSON::ParserError => e

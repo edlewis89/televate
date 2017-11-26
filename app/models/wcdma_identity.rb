@@ -1,4 +1,5 @@
 class WcdmaIdentity < ApplicationRecord
+  #has_many :metrics, as: :metricable
   has_many :wcdma_identities_metrics,  dependent: :destroy, :class_name => 'MetricsWcdmaIdentities'
   has_many :metrics, through: :wcdma_identities_metrics
   

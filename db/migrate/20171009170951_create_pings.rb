@@ -8,8 +8,8 @@ class CreatePings < ActiveRecord::Migration[5.1]
       t.decimal :ping_avg, :precision => 6, :scale => 3
       t.decimal :ping_max, :precision => 6, :scale => 3
       t.decimal :ping_min, :precision => 6, :scale => 3
-      t.decimal :ttl, :precision => 4, :scale => 2
-      t.decimal :time, :precision => 4, :scale => 2
+      t.decimal :ttl, :precision => 5, :scale => 2
+      t.decimal :time, :precision => 5, :scale => 2
       t.string :host
       t.string :net
       t.string :ip
