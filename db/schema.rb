@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171103012618) do
+ActiveRecord::Schema.define(version: 20171201223050) do
 
   create_table "cdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "mbasestationid"
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.bigint "network_state_id"
     t.bigint "location_id"
     t.bigint "ping_id"
+    t.bigint "report_id"
     t.datetime "ingest_timestamp"
     t.bigint "cell_identity_lte_id"
     t.bigint "cell_identity_cdma_id"
@@ -138,6 +139,12 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.index ["location_id"], name: "index_metrics_on_location_id", unique: true
     t.index ["network_state_id"], name: "index_metrics_on_network_state_id", unique: true
     t.index ["ping_id"], name: "index_metrics_on_ping_id", unique: true
+    t.index ["report_id"], name: "index_metrics_on_report_id", unique: true
+  end
+
+  create_table "metrics_wcdma_identities", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "wcdma_identity_id", null: false
+    t.bigint "metric_id", null: false
   end
 
   create_table "network_states", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -165,6 +172,14 @@ ActiveRecord::Schema.define(version: 20171103012618) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["metric_id"], name: "index_pings_on_metric_id", unique: true
+  end
+
+  create_table "reports", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "report_type"
+    t.string "event_type"
+    t.string "drive_mode"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "wcdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

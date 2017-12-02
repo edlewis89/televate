@@ -2,6 +2,7 @@ class Metric < ApplicationRecord
   belongs_to :ping, optional: true
   belongs_to :location, optional: true
   belongs_to :network_state, optional: true
+  belongs_to :report, optional: true
   
   has_many :cells_metrics, dependent: :destroy, :class_name => 'CellsMetrics'
   has_many :cells, through: :cells_metrics

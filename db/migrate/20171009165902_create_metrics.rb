@@ -4,7 +4,7 @@ class CreateMetrics < ActiveRecord::Migration[5.1]
       t.belongs_to :network_state, index: { unique: true }
       t.belongs_to :location, index: { unique: true } 
       t.belongs_to :ping, index: { unique: true } 
-      
+      t.belongs_to :report, index: { unique: true } 
       #t.references :metricable, polymorphic: true,  index: true
      
       t.datetime :ingest_timestamp

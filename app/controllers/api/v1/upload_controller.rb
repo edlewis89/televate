@@ -43,9 +43,11 @@ class API::V1::UploadController < ApplicationController
       conditions[:location] = params[:location]   
       conditions[:ping] = params[:ping] 
       conditions[:network_state] = params[:network_state] 
+      conditions[:report] = params[:report_type] 
       conditions[:timestamp] = params[:timestamp] 
+     
       #cell_device_id="", cell_line1number="", cell_info_data={}, cell_location_data={}, cell_ping_data={}, cell_timestamp={}       
-      dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:line1number], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:network_state], conditions[:timestamp])      
+      dsl = CellInfo::Dsl.new(conditions[:device_id], conditions[:line1number], conditions[:cellinfo], conditions[:location], conditions[:ping], conditions[:network_state], conditions[:report], conditions[:timestamp])      
       if dsl 
         if extract(dsl)                 
           success_upload(conditions)
@@ -200,6 +202,22 @@ class API::V1::UploadController < ApplicationController
             
             m.network_state_id = netState.id
             
+          end
+          
+          ####################################################
+          #  REPORT
+          #
+          ####################################################         
+          if !dsl.cell_report_object.nil?
+            report = Report.new()
+            ingest_report_hash ={}
+            report_hash = dsl.cell_report_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
+            puts "...report parse #{report_hash}" 
+            ingest_report_hash = report_hash.select{|k, v| ingest_report_hash[k.downcase]=v if report.respond_to?k.downcase.to_s} 
+            puts "...ingest_report_hash parse #{ingest_report_hash}" 
+            report.update_attributes(ingest_report_hash)
+            m.report_id = report.id                                           
+             
           end
           
           ####################################################
@@ -424,6 +442,23 @@ class API::V1::UploadController < ApplicationController
             end
             
             ####################################################
+            #  REPORT
+            #
+            ####################################################         
+            if !dsl.cell_report_object.nil?
+              report = Report.new()
+              ingest_report_hash ={}
+              report_hash = dsl.cell_report_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
+              puts "...report parse #{report_hash}" 
+              ingest_report_hash = report_hash.select{|k, v| ingest_report_hash[k.downcase]=v if report.respond_to?k.downcase.to_s} 
+              puts "...ingest_report_hash parse #{ingest_report_hash}" 
+              report.update_attributes(ingest_report_hash)
+              m.report_id = report.id                                           
+               
+            end
+            
+            
+            ####################################################
             #  CELL INFO
             #
             #################################################### 
@@ -614,7 +649,7 @@ class API::V1::UploadController < ApplicationController
 
   def cell_info_params
     # whitelist params
-    params.permit(:device_id, :cellinfo, :location, :ping, :network_state, :line1number, :timestamp, :format)
+    params.permit(:device_id, :cellinfo, :location, :ping, :network_state, :line1number, :report_type, :timestamp, :format)
   end
 
   def set_cell_info
