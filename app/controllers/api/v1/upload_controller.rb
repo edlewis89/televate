@@ -124,10 +124,11 @@ class API::V1::UploadController < ApplicationController
           m = Metric.new({:ingest_timestamp => DateTime.now()})         
           puts "...Initialized Metric Object #{m.ingest_timestamp}"
           
-          m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data})
-          m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data})
-          m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data})  
-          m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data})  
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data}) if dsl.ingested_json_data
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data}) if dsl.ingested_location_data
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data}) if dsl.ingested_ping_data
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_report', :data => dsl.ingested_report_data}) if dsl.ingested_report_data
+          m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data}) if dsl.ingested_netstate_data
           puts "...added raw data #{m.ingested_datum.size}"
           
           ####################################################
@@ -368,10 +369,11 @@ class API::V1::UploadController < ApplicationController
            
             puts "...Initialized Metric Object #{m.ingest_timestamp}"
             
-            m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data})
-            m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data}) 
-            m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data}) 
-            m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data})  
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data}) if dsl.ingested_json_data
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data}) if dsl.ingested_location_data
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data}) if dsl.ingested_ping_data
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_report', :data => dsl.ingested_report_data}) if dsl.ingested_report_data
+            m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data}) if dsl.ingested_netstate_data 
             puts "...added raw data #{m.ingested_datum.size}"
             
             ####################################################
