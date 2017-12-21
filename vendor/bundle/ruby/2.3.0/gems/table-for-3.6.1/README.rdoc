@@ -1,0 +1,516 @@
+= table-for
+
+TableFor is a table builder for a collection of domain objects. It very easily allows the user to specify 
+the columns to render and to override how the table, the header columns, the rows, and the columns are rendered.
+
+== Installation
+
+In <b>Rails 3 or Rails 4</b>, add this to your Gemfile.
+
+  gem "table-for"
+
+== Example
+The following example is purposely complex (in many cases, there are easier ways to do what is shown) 
+in order to show a wide range of features that TableFor is capable of:
+
+  <%= table_for @users, :table_html => { :class => "table table-hover table-bordered" },
+                        :sortable => true,
+                        :sort_url => sort_admin_users_path,
+                        :link_namespace => :admin,
+                        :data_row_html => {
+                          :class => lambda { cycle('success', 'error', 'warning', 'info')},
+                          :id => lambda { |user| "user-#{user.id}" }} do |table| %>
+    <% table.column :data => "Modify", :link_action => :edit %>
+    <% table.column :data => "Show", :link_url => lambda { |user| admin_user_path(user) } %>
+    <% table.column :data => "Show 2.0", :link => true %>
+    <% table.column :email, :header => "Email Address" %>
+    <% table.column :first_name, :formatter => :downcase %>
+    <% table.column :last_name, :formatter => lambda { |last_name| last_name.upcase } %>
+    <% table.column :created_at, :formatter => [:strftime, "%m/%d/%y %I:%M %p"] %>
+    <% table.column :updated_at,
+                    :header => lambda {
+                      content_tag(:span, :class => "badge badge-success") do
+                        "Last Updated"
+                      end
+                    },
+                    :sortable => false,
+                    :header_column_html => { :style => "background-color:orange" },
+                    :data => lambda { time_ago_in_words table.current_row.updated_at } %>
+    <% table.column :full_name, :header => "Full Name", :order => "last_name, first_name" do |user| %>
+      <%= "#{user.first_name} #{user.last_name}" %>
+    <% end %>
+    <% table.header :full_name do |column, options| %>
+      <%= table.header_sort_link(column, options) do %>
+        <span class="label label-important">FULL NAME</span>
+      <% end %>
+    <% end %>
+    <% table.column :data => "Delete", :link_method => :delete, :link_confirm => "Are you sure?" %>
+    <% table.footer do %>
+      <div class="pull-right">
+        <%= will_paginate @users %>
+      </div>
+    <% end %>
+  <% end %>
+
+Produces (with Twitter Bootstrap):
+
+{<img src="https://raw.github.com/hunterae/table-for/master/example_table.png">}[http://example.com]
+
+For detailed instructions on how to run this example, along with comments on every line of the above table,
+check out the {Example Details}[https://github.com/hunterae/table-for/blob/master/example.rdoc].
+
+== table_for options
+The first argument to the table_for call will always be the array of domain objects. The second argument is a hash
+and is optional. It is any combination of the following options:
+
+sortable::
+  (defaults to false)
+  Sets whether all columns are sortable by default.
+  If this field is set to true, each column header will be generated as a link.
+    <%= table_for @users, :sortable => true %>
+      <% table.column :first_name %>
+    <% end %>
+sort_url::
+  (defaults to the current path)
+  Sets the url for the header column links. This will only affect columns that are sortable.
+    <%= table_for @users, :sortable => true,
+                          :sort_url => sort_admin_users_path %>
+      <% table.column :first_name %>
+    <% end %>
+link_namespace::
+  (defaults to nil)
+  Sets the default namespace for any links generated in the columns.
+  For example, a link_namespace of admin would try to build links within the admin namespace in the routes.
+  This can be specified as a string, an array, a domain object, or a symbol,
+    <%= table_for @users, :link_namespace => [:admin, @post, :comments] %>
+      <% table.column :first_name, :link => true %>
+    <% end %>
+table_html::
+  (defaults to nil)
+  Hash to specify the styles, classes, id, and other attributes applied to the table element.
+    <%= table_for @users, :table_html => { :id => "my-table",
+                                           :class => "table table-bordered",
+                                           :cellpadding => 2 } %>
+      <% table.column :first_name %>
+    <% end %>
+thead_html::
+  (defaults to nil)
+  Hash to specify the styles, classes, id, and other attributes applied to the thead element.
+  Note: If TableFor.config.thead_tag is set to nil, the thead surrounding element for the
+  header row will not be rendered.
+    <%= table_for @users, :thead_html => { :id => "thead-id" } %>
+      <% table.column :first_name %>
+    <% end %>
+header_row_html::
+  (defaults to nil)
+  Hash to specify the styles, classes, id, and other attributes applied to the header row (tr) element.
+    <%= table_for @users, :header_row_html => { :style => 'color: orange' } %>
+      <% table.column :first_name %>
+    <% end %>
+header_column_html::
+  (defaults to {})
+  Hash to specify the styles, classes, id, and other attributes applied to the header column (th) element.
+  The values in this hash can each be a string or a Proc that takes (optionally) the column object as a parameter.
+    <%= table_for @users, :header_column_html =>
+      { :style => "font-weight: bold",
+        :class => lambda {|column| "#{column.name}_header" } %>
+      <% table.column :first_name %>
+    <% end %>
+tbody_html::
+  (defaults to nil)
+  Hash to specify the styles, classes, id, and other attributes applied to the tbody element.
+  Note: If TableFor.config.tbody_tag is set to nil, the tbody surrounding element for the
+  table data rows will not be rendered.
+    <%= table_for @users, :tbody_html => { :id => "body-id" } %>
+      <% table.column :first_name %>
+    <% end %>
+data_row_html::
+  (defaults to nil)
+  Hash to specify the styles, classes, id, and other attributes applied to each data row element (tr).
+  The values in this hash can each be a string or a Proc that takes (optionally) the current record as a parameter
+    <%= table_for @users, :data_row_html =>
+      { :class => lambda { cycle('success', 'error', 'warning', 'info')}, 
+        :id => lambda { |user| "user-#{user.id}" } } %>
+      <% table.column :first_name %>
+    <% end %>
+data_column_html::
+  (defaults to {})
+  Hash to specify the styles, classes, id, and other attributes applied to the data column (td) element.
+  The values in this hash can each be a string or a Proc that takes (optionally) the current_record and
+  (also optionally) the column object as parameters
+    <%= table_for @users, :data_column_html =>
+      { :style => "font-weight: bold", 
+        :id => lambda { |record, column| "record-#{record.id}-#{column.name}"
+      }} do |table| %>
+      <% table.column :first_name %>
+    <% end %>
+tfoot_html::
+  (defaults to nil)
+  Hash to specify the styles, classes, id, and other attributes applied to the tfoot element.
+  Note: If TableFor.config.tfoot_tag is set to nil, the tfoot surrounding element for the
+  footer row will not be rendered.
+    <%= table_for @users, :tfoot_html => { :id => "tfoot-id" } %>
+      <% table.column :first_name %>
+    <% end %>
+footer_row_html::
+  (defaults to nil)
+  Hash to specify the styles, classes, id, and other attributes applied to the footer row (tr) element.
+    <%= table_for @users, :footer_row_html => { :style => 'color: orange' } %>
+      <% table.column :first_name %>
+    <% end %>
+footer_column_html::
+  (defaults to nil)
+  Hash to specify the styles, classes, id, and other attributes applied to the footer column (td) spanning the entire footer row.
+    <%= table_for @users, :footer_column_html =>
+      { :style => 'color: orange' } %>
+      <% table.column :first_name %>
+    <% end %>
+
+== table_for column options
+Each individual table column can specify it's own set of options, which can override any options 
+applied globally in the table options.
+
+The first argument to the column is optional and represents the name of the column. 
+If specified, it must be unique to the table, and TableFor will attempt to use this 
+field to lookup the value to display in the record, as well as the name to apply to the header column.
+
+For example, <% table.column :first_name %> will output the first_name field for each record passed to the table. 
+
+If a :header option is not specified for the individual column, it will use this first argument to 
+check for a translation key to give the header of the column a name (see below under Internationalization). 
+Failing to find a translation key, it will titleize "first_name" to "First Name" and use
+that label for the header of the column.
+
+The second argument (or first argument if the name of the column is ommitted) to a table column is a hash and is also optional. It is any combination of the following options:
+
+data::
+  (defaults to nil, unless specified on the entire table)
+  Either an object instance (on which #to_s will be invoked) or a Proc
+  (which can optionally take the current row as an option), representing the text to be shown
+  in the data cell of the column.
+    <%= table_for @users do |table| %>
+      <% table.column :data => "Edit" %>
+      <% table.column :name, :data =>
+        lambda {|user| user.name.underscore.upcase } %>
+    <% end %>
+formatter::
+  (defaults to nil, unless specified on the entire table)
+  Either a method name, and array with the method to invoke and its arguments, 
+  or a Proc (which will be passed the value requiring formatting, based on the current column's name).
+  The :formatter argument will only work if the column name has been specified.
+  In such a case, the current iteration row will be sent the name of the column, and the resulting value will be
+  what's being formatted. If there is a simple method that needs to be applied to the result, that method name can
+  be specified as the formatter, or a series of method names (shown in examples below):
+    <%= table_for @users do |table| %>
+      <% table.column :id, :formatter => :ordinalize %>
+      <% table.column :created_at, :formatter => [:strftime, "%m/%d/%Y"] %>
+      <% table.column :first_name, :formatter =>
+        lambda {|first_name| first_name.downcase } %>
+      <%# THE FOLLOWING IS INVALID %>
+      <% table.column :formatter => :ordinalize %>
+    <% end %>
+header::
+  (defaults to nil, unless specified on the entire table)
+  Either false, an object instance (on which #to_s will be invoked) or a Proc
+  (which can optionally take the current column as an option),
+  representing the text to be shown in the header cell of the column. If the :header option is not specified,
+  and no column name is specified (the first argument to the column), then no text will be displayed in the
+  header cell.
+    <%= table_for @users,
+      :header => lambda { |column| 
+        I18n.t("tables.headers.#{column.name.to_s.underscore}",
+          :default => column.name.to_s.titleize)
+      } do |table| %>
+      <% table.column :id, :header => false %>
+      <% table.column :first_name, :header => "FIRST NAME" %>
+      <% table.column :last_name %>
+    <% end %>
+sortable::
+  (defaults to false, unless specified on the entire table)
+  Whether this particular column is sortable, which will render a sort link around the header name with a sort_mode
+  field alternating between values 'asc', 'desc', and 'reset'
+    <%= table_for @users, :sortable => true do |table| %>
+      <% table.column :id, :sortable => false %>
+      <% table.column :first_name %>
+    <% end %>
+sort_url::
+  (defaults to "", a.k.a. the current url, unless specified on the entire table)
+  The sort url that sort links should be generated with
+    <%= table_for @users do |table| %>
+      <% table.column :first_name, :sortable => true,
+                                   :sort_url => sort_admin_users_path %>
+    <% end %>
+order::
+  (defaults to the current column's name)
+  The sort order (either a string or symbol) that sort links should be generated with
+    <%= table_for @users, :sortable => true do |table| %>
+      <% table.column :first_name, :order => :fname %>
+      <% table.column :last_name, :order => "lname" %>
+      <% table.column :full_name, :order => "lname,fname" %>
+    <% end %>
+  Note: In the last example, the controller would likely need to split the order param on the comma,
+  and apply the sort_mode to each field in the split, i.e.
+    params[:order].split(",").map do |field|
+      "#{field} #{params[:sort_mode]}"
+    end.join(",")
+link_url::
+  (defaults to nil, unless specified on the entire table)
+  Either a string or a Proc (which can optionally take the current record being iterated on)
+  which wraps the data columns content in a link.
+    <%= table_for @users do |table| %>
+      <% table.column :id, :link_url =>
+        lambda {|user| edit_admin_user_path(user) } %>
+      <% table.column :header => false,
+                      :data => "DELETE",
+                      :link_method => :DELETE,
+                      :link_url => lambda { admin_user_path(user) } %>
+    <% end %>
+link_action::
+  (defaults to nil)
+  An alternative to link_url, link_action takes advantage of Rails' url_for method to generate the url to a specific action
+    <%= table_for @users do |table| %>
+      <% table.column :data => "Edit", :link_action => :edit %>
+      <% table.column :data => "Delete", :link_action => :delete
+        # assuming there is a GET delete route defined %>
+      <% table.column :data => "Show", :link => true %>
+    <% end %>
+link_method::
+  (defaults to nil)
+  The HTML method to be used to trigger the link (GET/PUT/POST/DELETE)
+    <%= table_for @users do |table| %>
+      <% table.column :data => "Delete", :link_method => :DELETE %>
+    <% end %>
+link_confirm::
+  (defaults to nil)
+  A confirmation message (javascript) that will be displayed when the user clicks the link
+    <%= table_for @users do |table| %>
+      <% table.column :data => "Delete", :link_method => :DELETE,
+                      :link_confirm =>
+                        "Are you sure you want to delete this user?" %>
+    <% end %>
+link_html::
+  (defaults to {}, unless specified on the entire table)
+  Hash to specify the styles, classes, id, and other attributes applied to the link element.
+    <%= table_for @users do |table| %>
+      <% table.column :data => "Delete", :link_method => :DELETE,
+                      :link_html =>
+                        {:style => "color: RED; font-weight: BOLD"} %>
+    <% end %>
+link_namespace::
+  (defaults to nil, unless specified on the entire table; normally this option would be specified on the entire table)
+  Sets the namespace for the link.
+  For example, a link_namespace of admin would try to build the link within the admin namespace in the routes.
+  This can be specified as a string, an array, a domain object, or a symbol,
+    <%= table_for @users %>
+      <% table.column :first_name, :link_namespace =>
+        [:admin, @post, :comments], :link => true %>
+    <% end %>
+link::
+  (defaults to false)
+  Sets whether the column's content should render as a link (this can also be accomplished by setting :link_url,
+  :link_action, :link_method, or :link_confirm). Set this to true if you are trying to render a show link, since
+  specifying :link_action as :show would break the call to url_for.
+    <%= table_for @users %>
+      <% table.column :id, :link => true %>
+    <% end %>
+data_column_html::
+  (defaults to {}, unless specified on the entire table)
+  Hash to specify the styles, classes, id, and other attributes applied to the data column (td) element.
+  The values in this hash can each be a string or a Proc that takes (optionally) the current_record and
+  (also optionally) the column object as parameters
+    <%= table_for @users, :data_column_html =>
+      { :style => "font-weight: bold", 
+        :id => lambda { |record, column| "record-#{record.id}-#{column.name}"
+      }} do |table| %>
+      <% table.column :first_name %>
+      <% table.column :last_name, :data_column_html =>
+        {:style => "color: red"} %>
+    <% end %>
+header_column_html::
+  (defaults to {}, unless specified on the entire table)
+  Hash to specify the styles, classes, id, and other attributes applied to the header column (th) element.
+  The values in this hash can each be a string or a Proc that takes (optionally) the column object as a parameter.
+    <%= table_for @users, :header_column_html =>
+      { :style => "font-weight: bold",
+        :class => lambda {|column| "#{column.name}_header" } %>
+      <% table.column :first_name %>
+      <% table.column :last_name, :header_column_html =>
+        {:style => "font-size: 20px"} %>
+    <% end %>
+
+== table_for header options
+Should you require more control over how a particular header column renders, the default rendering for particular
+column can easily be replaced. This can be accomplish using the header method within a table_for declaration:
+
+  <%= table_for @users do |table| %>
+    <% table.header :first_name do %>
+      Custom Header Code
+    <% end %>
+    <% table.column :first_name %>
+  <% end %>
+
+Note: to specify the :header_column_html (the styles / classes to be applied to the th element),
+this should still be done on the column call:
+
+  <%= table_for @users do |table| %>
+    <% table.header :first_name do %>
+      <%= link_to "First Name", :sort_mode =>
+        (params[:sort_mode] == "asc" ? "desc" :
+          (params[:sort_mode] == "desc" ? "reset" : "asc")) %>
+    <% end %>
+    <% table.column :first_name, :header_column_html => {
+      :class => 
+         lambda { params[:sort_mode] == "asc" ? "sorting_asc" : 
+                  (params[:sort_mode] == "desc" ? "sorting_desc" : "sorting") }} %>
+  <% end %>
+
+In the above example, the first name column header will cycle between classes of
+"sorting_asc", "sorting_desc", and "sorting", while the sort link itself in the header
+will cycle between sort_mode parameters of "asc", "desc", and "reset". (This is actually
+the default TableFor sorting behavior)
+
+== table_for footer options
+There are two ways to specify a footer for a table.
+
+The first way assumes takes care of rendering the :tfoot element (if TableFor.config.tfoot_tag has not been set to nil),
+the :tr element, and a single :td element that has its colspan set the number of columns in the table (i.e. it spans the full
+width of the table):
+
+  <%= table_for @users do |table| %>
+    <% table.column :first_name %>
+    <% table.column :last_name %>
+    <% table.footer do %>
+      <div class="pull-right">
+        <%= will_paginate @users %>
+      </div>
+    <% end %>
+  <% end %>
+
+The second approach will be described below under "Advanced: Replacing Table Definitions"
+
+== table_for configuration
+Just as TableFor options can be configured "globally" a single table, it can be configured globally for all tables.
+
+This is accomplished through the TableFor#setup method. Any options that can be specified in the table_for options
+can also be specified in an initializer method. For example, consider an application where all tables should
+automatically have the css class "table table-hover table-bordered". This is easily accomplished in an initializer:
+
+  TableFor.setup do |config|
+    config.table_html = { :class => "table table-hover table-bordered" }
+  end
+
+Gotcha: At this time, you will not be able to configure any TableFor settings that rely on Rails cycles, as the cycle
+would be maintained globally and would produce unexpected results.
+
+Besides the table_for options that may be configured globally, the following addition options may be set:
+
+thead_tag::
+  (defaults to :thead)
+  Set this to nil if a thead_tag should not be rendered around the header row of the table.
+
+tbody_tag::
+  (defaults to :tbody)
+  Set this to nil if a tbody tag should not be rendered around the body data rows of the table.
+
+tfoot_tag::
+  (defaults to :tfoot)
+  Set this to nil if a tbody tag should not be rendered around the footer row of the table.
+
+sort_modes::
+  (defaults to [:asc, :desc])
+  Sets the order of sort_mode links. A particular sortable column will, by default, generate a sort link
+  with sort_mode set to :asc. If the sort_mode is already :asc for that column, then it generate the sort
+  link with sort_mode set to :desc. Finally, if the sort_mode is already :desc for that column, it will
+  generate a sort link with sort_mode blank.
+
+== Internationalization
++table-for+ can do some dirty job for you, if you are using i18n by common rails conventions. For example, you have following in your en.yml:
+
+  en:
+    activerecord:
+      attributes:
+        user:
+          id: '#'
+          name: "Username"
+          bio: "Short biography"
+
+Then, +table-for+ will automatically look up correct translations for column headers. If you are not familiar with i18n, you can always pass a custom header to the column:
+
+  <%= table_for @users do |table| %>
+    <% table.column :parent_name, header: "Mr. Smith" %>
+  <% end %>
+
+== ADVANCED: Replacing table definitions
+Because TableFor was built on top of {Blocks}[https://github.com/hunterae/blocks],
+you'll have access to some really cool functionality, such as the ability to replace how any aspect
+of your table is defined and rendered.
+
+If you take a cursory look at the file
+{_table_for.html.erb}[https://github.com/hunterae/table-for/blob/master/app/views/table_for/_table_for.html.erb],
+you see a series of "table.define" calls. These are defining the various elements of the table, and many are recursive
+definitions by nature.
+
+For example, the call to "table.define :table", has calls to "table.render :header", "table.render :body", and "table.render :footer".
+Below the "table.define :table", you'll find the calls to "table.define :header", "table.define :body", and "table.define :footer".
+It shouldn't be hard to see the you're defining the table html element, and the table is made up of a header, a body, and a footer.
+The header is made up a header row, the body is made up of data rows, and the footer is made up of a footer row. Each of those
+rows is broken down into further definitions.
+
+A question worth asking then is what is really happening here:
+  <%= table_for @users do |table| %>
+    <% table.column :full_name do |user| %>
+      Overriden: <%= "#{user.first_name} #{user.last_name}" %>
+    <% end %>
+  <% end %>
+
+By passing a block in the definition of the :full_name column, we are overriding the default definition for
+the full_name block (the default definition can be found
+{here}[https://github.com/hunterae/table-for/blob/master/app/views/table_for/_table_for.html.erb#L51-L54]).
+Should we not have specified the block, it would have called #full_name on the user object
+for each row. But as it is, we've overridden the default behavior for this column.
+
+Note: table.column is an alias to the #queue method, inherited from {WithTemplate}[https://github.com/hunterae/with_template].
+It works very similar to the "table.define" calls, but preserves the order in which blocks are defined. Because the order
+of table columns is important, this is the reason for using #queue instead of #define.
+
+Applying the above principle, it shouldn't be much of a stretch to see that any piece of the TableFor definition may easily
+be replaced. For example, suppose we didn't like the way footers are {defined}[https://github.com/hunterae/table-for/blob/master/app/views/table_for/_table_for.html.erb#L56-L60].
+
+To replace this definition, simply #define a footer block:
+
+  <%= table_for @users do |table| %>
+    <% table.column :first_name %>
+    <% table.column :last_name %>
+    <% table.define :footer do %>
+      <tfoot>
+        <tr>
+          <td colspan="<%= table.columns.length %>">
+            <div class="pull-right">
+              <%= will_paginate @users %>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    <% end %>
+  <% end %>
+
+== ADVANCED: Using "Before" and "After" hooks
+Another benefit of TableFor being built on top of {Blocks}[https://github.com/hunterae/blocks] is the ability
+to define before and after blocks. Before blocks will render code before a particular named block is rendered;
+after blocks will render code after said block. So suppose we wanted to render an extra row after every data row
+rendered that provided some additional data. By examining the TableFor 
+{DTD}[https://github.com/hunterae/table-for/blob/master/app/views/table_for/_table_for.html.erb#L38-L43],
+we can see the block responsible for rendering an individual data row is called :data_row. With this knowledge,
+we can easily render an extra row after each data_row:
+
+  <%= table_for @users do |table| %>
+    <% table.column :first_name %>
+    <% table.column :last_name %>
+    <% table.after :data_row do %>
+      <tr>
+        <td colspan="<%= table.columns.length %>">
+          Some extra data
+        </td>
+      </tr>
+    <% end %>
+  <% end %>

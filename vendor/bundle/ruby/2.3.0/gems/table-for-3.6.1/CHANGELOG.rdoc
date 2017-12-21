@@ -1,0 +1,72 @@
+3.6.1
+* Fixed :sortable option for Rails 5 that was breaking when
+ActionController::Parameters#to_query was being called without any arguments
+as reported and fixed by @karwank here https://github.com/hunterae/table-for/pull/10.
+Thanks @karwank.
+
+3.6.0
+* Generated td tags will collapse all whitespace per suggestion by @jlfy.
+
+3.5.0
+* table_for now keeps track of the current index of the row being render, per
+suggestion by @jlfy. Example:
+  <%= table_for @users do |table| %>
+    <% table.column :id do |user| %>
+      "User id #{user.id} rendering with row index #{table.current_index}"
+    <% end %>
+  <% end %>
+
+3.4.1
+* Fixed bug introduced in version 3.4.0 where link_namespace defined globally
+on the table_for call was getting completely ignored. Thanks @panyamin for reporting.
+
+3.4.0
+* Links options that are applied to a column will now generate the link even if you override
+column. In haml, this example pointed out by @noctivityinc, now works:
+  = t.column link_action: :edit do
+   %i.fa.fa-pencil
+* Fixed generation of link_confirm and link_method to apply to the links data element.
+
+3.2.1
+* Added ability to configure sort_mode order, i.e. if sort links generate sort_modes in :asc, :desc order, or have different labels
+than :asc and :desc
+
+3.2.0
+* Changed the way configuration is done for TableFor. It is still done through TableFor.setup {|config|}, but some of the options have changed. Namely, the new configuration options are thead_tag, tbody_tag, tfoot_tag. If you do not want thead, tbody, or tfoot tags to be rendered, you can specify this in the setup block as follows: TableFor.setup {|config| config.thead_tag = nil; config.tbody_tag = nil; config.tfoot_tag = nil }. In addition, you can also globally define styles for the table as follows: TableFor.setup {|config| config.table_html = {:class => "table striped"}}. This undoes what was was released in 2.1.0
+
+3.1.5
+* Added automatic internationalization (thanks {killthekitten}[https://github.com/killthekitten])
+
+3.1.0
+* Since templating was moved from blocks into its own gem with_template, TableFor::Base now extends WithTemplate::Base instead of Blocks::Base.
+
+2.2.0 (August 16, 2013)
+* Upgraded to blocks 2.2.0 and modified calls to evaluated_proc and evaluated_procs to call_if_proc and call_each_hash_value_if_proc
+
+2.1.0 (August 15, 2013)
+* Switched main gem dependency from building-blocks to blocks
+* Added the ability to configure a default table class in an initializer (for example: TableFor.setup do |config| config.default_table_class = "table striped" end)
+* Aliased current_record with current_row, so as you're iterating over the records, you can now call table.current_row
+
+2.0.0 (October 18, 2012)
+* Upgraded to BuildingBlocks 2.0.0
+* Renamed thead block to header, tbody to body, add added an empty footer block to the default table implementation
+* Utilized features from BuildingBlocks 2.0.0, such as collection declaration of blocks, and collection rendering of blocks
+* Current record being iterated over no longer needs to be passed in as a parameter to the block, but can be accessed via the table.current_record, such as:
+  <% table.column do %>
+    <%= table.current_record.name %>
+  <% end %>
+
+1.2.1 (February 9, 2012)
+
+* Moved table_for_evaluated_options method into BuildingBlocks gem and renamed to evaluated_procs
+* Also now utilizing a method created in BuildingBlocks called evaluated_proc
+* The url for an edit, show, and delete link can now be a Proc that takes the current row's domain object as a paramter
+
+1.2.0 (February 5, 2012)
+
+* Upgraded dependency on BuildingBlocks to at least version 1.2.0
+
+1.1.0 (February 4, 2012)
+
+* Removed dependency on rails 3.1, switched to >= 3.0.0
