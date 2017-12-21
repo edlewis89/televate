@@ -1,0 +1,57 @@
+= call_with_params
+
+Call a Proc with an arbitrary number of params. The Proc will only be passed the number of arguments that it takes. If a Proc is not passed in as an argument, the first argument will simply be returned.
+
+== Installation
+Add the following to your Gemfile:
+  gem 'call_with_params'
+
+CallWithParams can be mixed into any class by adding a line:
+  include CallWithParams
+
+It is likely you will want to include CallWithParams in your views. This can best be accomplished by adding in an initializer:
+  ActionView::Base.send :include, CallWithParams
+
+== Sample Usage
+The best place to demonstrate the usage for CallWithParams is in the view:
+  link_to "My URL", call_with_params(my_url, user)
+
+If "my_url" is not a Proc, the link will simply be the specified "my_url" param. However, if it is a Proc, it will call that Proc with any additional params passed into the call_with_params method.
+
+Suppose, for example, that my_url is a locally defined Proc, such as:
+  <% my_url = Proc.new {|user| admin_user_path(user) } %>
+  <%= link_to "My URL", call_with_params(my_url, user) %>
+
+The Proc can also choose to not take all the parameters that are passed in:
+  <% my_url = Proc.new {|user, order_field| admin_user_path(user, :order => order_field) } %>
+  <%= link_to "My URL", call_with_params(my_url, user, "name", 1, 2, 3, 4, 5) %>
+
+Notice the Proc only takes the first two arguments that are passed in.
+
+
+Additionally, there is another method in CallWithParams called call_each_hash_value_with_params which can take hash of Procs, and invoke each Procs with the additional params passed into the call_each_hash_value_with_params method.
+
+For example:
+  <%= content_tag :tr, call_each_hash_value_with_params({:id => Proc.new {|user| "user-#{user.id}"}, 
+                                                         :class => Proc.new { cycle("even", "odd") }}, user) %>
+
+Any hash values that are not Procs will not be evaluated as Procs:
+  <%= content_tag :tr, call_each_hash_value_with_params({:id => Proc.new {|user| "user-#{user.id}"},
+                                                         :class => Proc.new { cycle("even", "odd") },
+                                                         :style => "color: red" }, user) %>
+
+== Contributing to call_with_params
+ 
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
+* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
+* Fork the project.
+* Start a feature/bugfix branch.
+* Commit and push until you are happy with your contribution.
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+== Copyright
+
+Copyright (c) 2013 Andrew Hunter. See LICENSE.txt for
+further details.
+
