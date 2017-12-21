@@ -3,7 +3,7 @@ default: &default
   encoding: utf8
   reconnect: false
   username: root
-  password: televate
+  password: Eml_5962
   host: localhost
   port: 3306
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
