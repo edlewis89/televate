@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(version: 20171201223050) do
     t.integer "maltitude"
     t.integer "mdistance"
     t.integer "mspeed"
-    t.decimal "mbearing", precision: 15, scale: 13
+    t.decimal "mbearing", precision: 6, scale: 2
     t.decimal "mlongitude", precision: 15, scale: 13
     t.decimal "mlatitude", precision: 15, scale: 13
     t.datetime "created_at", null: false

@@ -101,7 +101,7 @@ class API::V1::UploadController < ApplicationController
        return false                    
       end #if device_id
     rescue StandardError => e
-      puts "Error: #{e}"
+      Rails.logger.error "Error: #{e}"
       return false
     end
   end
@@ -116,20 +116,20 @@ class API::V1::UploadController < ApplicationController
     ####################################################  
     c.with_lock do
       if !dsl.cell_info_object.nil? && !dsl.cell_info_object.empty?    
-          puts "...Updating Cell Object #{c.cell_device_id}"
+          Rails.logger.info "...Updating Cell Object #{c.cell_device_id}"
           ####################################################
           #  METRIC
           #
           ####################################################   
           m = Metric.new({:ingest_timestamp => DateTime.now()})         
-          puts "...Initialized Metric Object #{m.ingest_timestamp}"
+          Rails.logger.info "...Initialized Metric Object #{m.ingest_timestamp}"
           
           m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data}) if dsl.ingested_json_data
           m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data}) if dsl.ingested_location_data
           m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data}) if dsl.ingested_ping_data
           m.ingested_datum << IngestedDatum.new({:name => 'cell_report', :data => dsl.ingested_report_data}) if dsl.ingested_report_data
           m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data}) if dsl.ingested_netstate_data
-          puts "...added raw data #{m.ingested_datum.size}"
+          Rails.logger.info "...added raw data #{m.ingested_datum.size}"
           
           ####################################################
           #  PING
@@ -148,7 +148,7 @@ class API::V1::UploadController < ApplicationController
                  
               if pp       
                 ingest_ping_hash=ping_hash.merge(pp.to_h)                                     
-                puts "...ingest_ping_hash parse #{ingest_ping_hash}"             
+                Rails.logger.info "...ingest_ping_hash parse #{ingest_ping_hash}"             
                 ping.update_attributes(ingest_ping_hash)
                 m.ping_id = ping.id                                                                       
               end  
@@ -161,15 +161,15 @@ class API::V1::UploadController < ApplicationController
           #
           #################################################### 
           if dsl.cell_location_object && !dsl.cell_location_object.empty?
-            puts "...adding location data #{dsl.cell_location_object}" unless dsl.cell_location_object.nil?
+            Rails.logger.info "...adding location data #{dsl.cell_location_object}" unless dsl.cell_location_object.nil?
             location = Location.new()
             ingest_location_hash ={}
             location_hash={}
             
             location_hash = dsl.cell_location_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
-            puts "...location parse #{location_hash}" 
+            Rails.logger.info "...location parse #{location_hash}" 
             ingest_location_hash = location_hash.select{|k, v| ingest_location_hash[k.downcase]=v if location.respond_to?k.downcase.to_s} 
-            puts "...ingest_location_hash parse #{ingest_location_hash}" 
+            Rails.logger.info "...ingest_location_hash parse #{ingest_location_hash}" 
             location.update_attributes(ingest_location_hash)
             m.location_id = location.id
             
@@ -180,15 +180,15 @@ class API::V1::UploadController < ApplicationController
           #
           #################################################### 
           if dsl.cell_netstate_object && !dsl.cell_netstate_object.empty?
-            puts "...adding netstate data #{dsl.cell_netstate_object}" unless dsl.cell_netstate_object.nil?
+            Rails.logger.info "...adding netstate data #{dsl.cell_netstate_object}" unless dsl.cell_netstate_object.nil?
             netState = NetworkState.new()
             ingest_netstate_hash ={}
             netstate_hash={}
             
             netstate_hash = dsl.cell_netstate_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
-            puts "...net state parse #{netstate_hash}" 
+            Rails.logger.info "...net state parse #{netstate_hash}" 
             ingest_netstate_hash = netstate_hash.select{|k, v| ingest_netstate_hash[k.downcase]=v if netState.respond_to?k.downcase.to_s} 
-            puts "...ingest_netstate_hash parse #{ingest_netstate_hash}" 
+            Rails.logger.info "...ingest_netstate_hash parse #{ingest_netstate_hash}" 
             
             ingest_netstate_hash.each do |key, value|
               if key.to_s == "system_timestamp_millis"
@@ -213,9 +213,9 @@ class API::V1::UploadController < ApplicationController
             report = Report.new()
             ingest_report_hash ={}
             report_hash = dsl.cell_report_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
-            puts "...report parse #{report_hash}" 
+            Rails.logger.info "...report parse #{report_hash}" 
             ingest_report_hash = report_hash.select{|k, v| ingest_report_hash[k.downcase]=v if report.respond_to?k.downcase.to_s} 
-            puts "...ingest_report_hash parse #{ingest_report_hash}" 
+            Rails.logger.info "...ingest_report_hash parse #{ingest_report_hash}" 
             report.update_attributes(ingest_report_hash)
             m.report_id = report.id                                           
              
@@ -360,21 +360,21 @@ class API::V1::UploadController < ApplicationController
         c.with_lock do
           if c.valid? && dsl.cell_info_object && !dsl.cell_info_object.empty?
             c.line1number = dsl.line1number if dsl.line1number
-            puts "...Initialized Cell Object #{c.cell_device_id}"
+            Rails.logger.info "...Initialized Cell Object #{c.cell_device_id}"
             ####################################################
             #  METRIC
             #
             ####################################################   
             m = Metric.new({:ingest_timestamp => DateTime.now()})
            
-            puts "...Initialized Metric Object #{m.ingest_timestamp}"
+            Rails.logger.info "...Initialized Metric Object #{m.ingest_timestamp}"
             
             m.ingested_datum << IngestedDatum.new({:name => 'cell_info', :data => dsl.ingested_json_data}) if dsl.ingested_json_data
             m.ingested_datum << IngestedDatum.new({:name => 'cell_location', :data => dsl.ingested_location_data}) if dsl.ingested_location_data
             m.ingested_datum << IngestedDatum.new({:name => 'cell_ping', :data => dsl.ingested_ping_data}) if dsl.ingested_ping_data
             m.ingested_datum << IngestedDatum.new({:name => 'cell_report', :data => dsl.ingested_report_data}) if dsl.ingested_report_data
             m.ingested_datum << IngestedDatum.new({:name => 'cell_netstate', :data => dsl.ingested_netstate_data}) if dsl.ingested_netstate_data 
-            puts "...added raw data #{m.ingested_datum.size}"
+            Rails.logger.info "...added raw data #{m.ingested_datum.size}"
             
             ####################################################
             #  PING
@@ -392,7 +392,7 @@ class API::V1::UploadController < ApplicationController
                
                 if pp       
                   ingest_ping_hash=ping_hash.merge(pp.to_h)                                           
-                  puts "...ingest_ping_hash parse #{ingest_ping_hash}"                  
+                  Rails.logger.info "...ingest_ping_hash parse #{ingest_ping_hash}"                  
                   ping.update_attributes(ingest_ping_hash)
                   m.ping_id = ping.id                                                                         
                 end  
@@ -403,17 +403,17 @@ class API::V1::UploadController < ApplicationController
             #
             #################################################### 
             if dsl.cell_location_object && !dsl.cell_location_object.empty?
-              puts "...adding location data #{dsl.cell_location_object}" 
+              Rails.logger.info "...adding location data #{dsl.cell_location_object}" 
               location = Location.new()
               ingest_location_hash ={}
               location_hash={}
               location_hash = dsl.cell_location_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
-              puts "...location parse #{location_hash}" 
+              Rails.logger.info "...location parse #{location_hash}" 
               ingest_location_hash = location_hash.select{|k, v| ingest_location_hash[k.downcase]=v if location.respond_to?k.downcase.to_s}  
-              puts "...ingest_location_hash parse #{ingest_location_hash}" 
+              Rails.logger.info "...ingest_location_hash parse #{ingest_location_hash}" 
               location.update_attributes(ingest_location_hash)
               m.location_id = location.id
-              puts "...ingest location data"
+              Rails.logger.info "...ingest location data"
             end
             
             ####################################################
@@ -421,15 +421,15 @@ class API::V1::UploadController < ApplicationController
             #
             #################################################### 
             if dsl.cell_netstate_object && !dsl.cell_netstate_object.empty?
-              puts "...adding netstate data #{dsl.cell_netstate_object}" unless dsl.cell_netstate_object.nil?
+              Rails.logger.info "...adding netstate data #{dsl.cell_netstate_object}" unless dsl.cell_netstate_object.nil?
               netState = NetworkState.new()
               ingest_netstate_hash ={}
               netstate_hash={}
               
               netstate_hash = dsl.cell_netstate_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
-              puts "...net state parse #{netstate_hash}" 
+              Rails.logger.info "...net state parse #{netstate_hash}" 
               ingest_netstate_hash = netstate_hash.select{|k, v| ingest_netstate_hash[k.downcase]=v if netState.respond_to?k.downcase.to_s} 
-              puts "...ingest_netstate_hash parse #{ingest_netstate_hash}" 
+              Rails.logger.info "...ingest_netstate_hash parse #{ingest_netstate_hash}" 
               ingest_netstate_hash.each do |key, value|
                 if key.to_s == "system_timestamp_millis"
                   system_time = value.to_i/1000
@@ -451,9 +451,9 @@ class API::V1::UploadController < ApplicationController
               report = Report.new()
               ingest_report_hash ={}
               report_hash = dsl.cell_report_object.each_pair.map{|k, v| [k.downcase, v]}.to_h 
-              puts "...report parse #{report_hash}" 
+              Rails.logger.info "...report parse #{report_hash}" 
               ingest_report_hash = report_hash.select{|k, v| ingest_report_hash[k.downcase]=v if report.respond_to?k.downcase.to_s} 
-              puts "...ingest_report_hash parse #{ingest_report_hash}" 
+              Rails.logger.info "...ingest_report_hash parse #{ingest_report_hash}" 
               report.update_attributes(ingest_report_hash)
               m.report_id = report.id                                           
                
@@ -476,7 +476,7 @@ class API::V1::UploadController < ApplicationController
                 ingest_lte_identity_hash ={}            
                 ingest_lte_identity_hash = cell_info.mCellIdentityLte.each_pair.map{|k,v| [k.downcase, v] if lte_identity.respond_to?k.downcase.to_s}.to_h       
                 lte_identity.update_attributes(ingest_lte_identity_hash) 
-                puts "...adding CellIdentityLte data #{ingest_lte_identity_hash}" 
+                Rails.logger.info "...adding CellIdentityLte data #{ingest_lte_identity_hash}" 
                  
                 if cell_info.mCellSignalStrengthLte && !cell_info.mCellSignalStrengthLte.empty?
                   #lte_sig_strength = LteSignalStrength.new({}) 
@@ -508,7 +508,7 @@ class API::V1::UploadController < ApplicationController
                 ingest_gsm_identity_hash ={}                        
                 ingest_gsm_identity_hash = cell_info.mCellIdentityGsm.each_pair.map{|k,v| [k.downcase, v] if gsm_identity.respond_to?k.downcase.to_s}.to_h           
                 gsm_identity.update_attributes(ingest_gsm_identity_hash) 
-                puts "...adding CellIdentityGsm data #{ingest_gsm_identity_hash}"
+                Rails.logger.info "...adding CellIdentityGsm data #{ingest_gsm_identity_hash}"
                 
                 if cell_info.mCellSignalStrengthGsm && !cell_info.mCellSignalStrengthGsm.empty?
                   #gsm_sig_strength = GsmSignalStrength.new({}) 
@@ -540,7 +540,7 @@ class API::V1::UploadController < ApplicationController
                 ingest_wcdma_identity_hash ={}            
                 ingest_wcdma_identity_hash = cell_info.mCellIdentityWcdma.each_pair.map{|k,v| [k.downcase, v] if wcdma_identity.respond_to?k.downcase.to_s}.to_h           
                 wcdma_identity.update_attributes(ingest_wcdma_identity_hash) 
-                puts "...adding mCellIdentityWcdma data #{ingest_wcdma_identity_hash}"
+                Rails.logger.info "...adding mCellIdentityWcdma data #{ingest_wcdma_identity_hash}"
                  
                 if cell_info.mCellSignalStrengthWcdma && !cell_info.mCellSignalStrengthWcdma.empty?
                   #wcdma_sig_strength = WcdmaSignalStrength.new({}) 
@@ -571,7 +571,7 @@ class API::V1::UploadController < ApplicationController
                 ingest_cdma_identity_hash ={}            
                 ingest_cdma_identity_hash = cell_info.mCellIdentityCdma.each_pair.map{|k,v| [k.downcase, v] if cdma_identity.respond_to?k.downcase.to_s}.to_h                         
                 cdma_identity.update_attributes(ingest_cdma_identity_hash) 
-                puts "...adding mCellIdentityCdma data #{ingest_cdma_identity_hash}"
+                Rails.logger.info "...adding mCellIdentityCdma data #{ingest_cdma_identity_hash}"
                 #m.cdma_identities << cdma_identity 
                 if cell_info.mCellSignalStrengthCdma && !cell_info.mCellSignalStrengthCdma.empty?
                   #cdma_sig_strength = CdmaSignalStrength.new({}) 
