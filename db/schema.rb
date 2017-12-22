@@ -13,17 +13,17 @@
 ActiveRecord::Schema.define(version: 20171201223050) do
 
   create_table "cdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "mbasestationid"
+    t.bigint "mbasestationid"
     t.integer "mlatitude"
     t.integer "mlongitude"
-    t.integer "mnetworkid"
-    t.integer "msystemid"
+    t.bigint "mnetworkid"
+    t.bigint "msystemid"
     t.boolean "mregistered"
-    t.integer "mcdmadbm"
-    t.integer "mcdmaecio"
-    t.integer "mevdodbm"
-    t.integer "mevdoecio"
-    t.integer "mevdosnr"
+    t.bigint "mcdmadbm"
+    t.bigint "mcdmaecio"
+    t.bigint "mevdodbm"
+    t.bigint "mevdoecio"
+    t.bigint "mevdosnr"
     t.datetime "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -48,12 +48,12 @@ ActiveRecord::Schema.define(version: 20171201223050) do
   end
 
   create_table "gsm_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "mcid"
-    t.integer "mmcc"
-    t.integer "mmnc"
-    t.integer "mlac"
+    t.bigint "mcid"
+    t.bigint "mmcc"
+    t.bigint "mmnc"
+    t.bigint "mlac"
     t.boolean "mregistered"
-    t.integer "mbiterrorrate"
+    t.bigint "mbiterrorrate"
     t.bigint "msignalstrength"
     t.datetime "mtimestamp"
     t.datetime "created_at", null: false
@@ -92,20 +92,21 @@ ActiveRecord::Schema.define(version: 20171201223050) do
   end
 
   create_table "lte_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "mci"
-    t.integer "mmcc"
-    t.integer "mmnc"
-    t.integer "mpci"
-    t.integer "mtac"
-    t.integer "mearfcn"
+    t.bigint "mci"
+    t.bigint "mmcc"
+    t.bigint "mmnc"
+    t.bigint "mpci"
+    t.bigint "mtac"
+    t.bigint "mearfcn"
     t.boolean "mregistered"
-    t.integer "mcqi"
-    t.integer "mrsrp"
-    t.integer "mrsrqc"
-    t.integer "mrssnr"
-    t.integer "mrsrq"
+    t.decimal "mcqi", precision: 15
+    t.bigint "mrsrp"
+    t.bigint "mrsrqc"
+    t.decimal "mrssnr", precision: 15
+    t.bigint "mrsrq"
     t.bigint "msignalstrength"
-    t.bigint "mtimingadvance"
+    t.decimal "mtimingadvance", precision: 15
+    t.bigint "mtimestamptype"
     t.datetime "mtimestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -183,13 +184,13 @@ ActiveRecord::Schema.define(version: 20171201223050) do
   end
 
   create_table "wcdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "mcid"
-    t.integer "mmcc"
-    t.integer "mmnc"
-    t.integer "mlac"
-    t.integer "mpsc"
+    t.bigint "mcid"
+    t.bigint "mmcc"
+    t.bigint "mmnc"
+    t.bigint "mlac"
+    t.bigint "mpsc"
     t.boolean "mregistered"
-    t.integer "mbiterrorrate"
+    t.bigint "mbiterrorrate"
     t.bigint "msignalstrength"
     t.datetime "mtimestamp"
     t.datetime "created_at", null: false
