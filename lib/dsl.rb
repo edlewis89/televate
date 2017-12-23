@@ -2,6 +2,18 @@
 #report_type (can be "Standard Report" or "Event Report")
 #drive_mode: (can be Test Drive or Automatic mode)
 #event_type: if an Event Report, then this prop will have event type valuel
+require 'json'
+
+class String
+  def is_json?
+    begin
+      !!JSON.parse(self)
+    rescue
+      false
+    end
+  end
+end
+
 
 module CellInfo
   class Dsl
@@ -15,11 +27,11 @@ module CellInfo
         @device_id = cell_device_id
         @line1number = cell_line1number if cell_line1number && cell_line1number != '' 
         
-        @ingested_json_data = cell_info_data if cell_info_data && !cell_info_data.empty?  && cell_info_data != 'NULL'
-        @ingested_location_data = cell_location_data  if cell_location_data && !cell_location_data.empty? && cell_location_data != 'NULL'  
-        @ingested_ping_data = cell_ping_data  if cell_ping_data && !cell_ping_data.empty? && cell_ping_data != 'NULL' 
-        @ingested_netstate_data = cell_netstate_data  if cell_netstate_data && !cell_netstate_data.empty? && cell_netstate_data != 'NULL'
-        @ingested_report_data = cell_report_data  if cell_report_data && !cell_report_data.empty? && cell_report_data != 'NULL'
+        @ingested_json_data = cell_info_data if cell_info_data && !cell_info_data.empty?  unless cell_info_data.is_json?
+        @ingested_location_data = cell_location_data  if cell_location_data && !cell_location_data.empty? unless cell_location_data.is_json?  
+        @ingested_ping_data = cell_ping_data  if cell_ping_data && !cell_ping_data.empty? unless cell_ping_data.is_json? 
+        @ingested_netstate_data = cell_netstate_data  if cell_netstate_data && !cell_netstate_data.empty? unless cell_netstate_data.is_json?
+        @ingested_report_data = cell_report_data  if cell_report_data && !cell_report_data.empty? unless cell_report_data.is_json?
         
         # @ingested_json_data = asj.decode(cell_info_data)  if cell_info_data && !cell_info_data.empty?  
         # @ingested_location_data = asj.decode(cell_location_data)  if cell_location_data && !cell_location_data.empty?     
