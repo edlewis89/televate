@@ -28,10 +28,10 @@ module CellInfo
         @line1number = cell_line1number if cell_line1number && cell_line1number != '' 
         
         @ingested_json_data = cell_info_data if cell_info_data && !cell_info_data.empty? 
-        @ingested_location_data = cell_location_data  if cell_location_data && !cell_location_data.empty? unless cell_location_data.is_json?  
-        @ingested_ping_data = cell_ping_data  if cell_ping_data && !cell_ping_data.empty? unless cell_ping_data.is_json? 
-        @ingested_netstate_data = cell_netstate_data  if cell_netstate_data && !cell_netstate_data.empty? unless cell_netstate_data.is_json?
-        @ingested_report_data = cell_report_data  if cell_report_data && !cell_report_data.empty? unless cell_report_data.is_json?
+        @ingested_location_data = cell_location_data  if cell_location_data && !cell_location_data.empty? unless cell_location_data.is_a?(JSON)  
+        @ingested_ping_data = cell_ping_data  if cell_ping_data && !cell_ping_data.empty? unless cell_ping_data.is_a?(JSON)  
+        @ingested_netstate_data = cell_netstate_data  if cell_netstate_data && !cell_netstate_data.empty? unless cell_netstate_data.is_a?(JSON) 
+        @ingested_report_data = cell_report_data  if cell_report_data && !cell_report_data.empty? unless cell_report_data.is_a?(JSON) 
         
         # @ingested_json_data = asj.decode(cell_info_data)  if cell_info_data && !cell_info_data.empty?  
         # @ingested_location_data = asj.decode(cell_location_data)  if cell_location_data && !cell_location_data.empty?     
