@@ -7,6 +7,8 @@ class CreateNetworkStates < ActiveRecord::Migration[5.1]
       t.string :network_state
 
       t.timestamps
+      
+      
     end
   end
 end

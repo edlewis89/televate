@@ -105,18 +105,12 @@ namespace :televate do
     
       report_type='{"drive_mode":"TestDriveMode","event_type":"","report_type":"Standard Report"}'
       cellinfo='[{"mCellIdentityLte":{"mCi":92055810,"mMcc":313,"mMnc":100,"mPci":133,"mTac":23379},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":-110,"mRsrq":-12,"mRssnr":2147483647,"mSignalStrength":18,"mTimingAdvance":2147483647},"mRegistered":true,"mTimeStamp":46191017149010,"mTimeStampType":3},{"mCellIdentityLte":{"mCi":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPci":53,"mTac":2147483647},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":-117,"mRsrq":-16,"mRssnr":2147483647,"mSignalStrength":11,"mTimingAdvance":2147483647},"mRegistered":false,"mTimeStamp":46191017149010,"mTimeStampType":3},{"mCellIdentityLte":{"mCi":2147483647,"mMcc":2147483647,"mMnc":2147483647,"mPci":201,"mTac":2147483647},"mCellSignalStrengthLte":{"mCqi":2147483647,"mRsrp":-111,"mRsrq":-11,"mRssnr":2147483647,"mSignalStrength":11,"mTimingAdvance":2147483647},"mRegistered":false,"mTimeStamp":46191017149010,"mTimeStampType":3}]'
-      location='{"mAccuracy":9,"mAltitude":264,"mBearing":0,"mDistance":0,"mElapsedRealtimeNanos":78241053258287,"mExtras":{"mAllowFds":true,"mFdsKnown":true,"mHasFds":false,"mParcelledData":{"mNativePtr":-1198028888,"mOwnsNativeParcelObject":true}},"mHasAccuracy":true,"mHasAltitude":true,"mHasBearing":false,"mHasSpeed":true,"mInitialBearing":0,"mIsFromMockProvider":false,"mLat1":0,"mLat2":0,"mLatitude":34.16907969,"mLon1":0,"mLon2":0,"mLongitude":-11.13232889,"mProvider":"gps","mResults":[0,0],"mSpeed":0,"mTime":1513293334000}'
+      location='{"mAccuracy":9,"mAltitude":264,"mBearing":0,"mDistance":0,"mElapsedRealtimeNanos":78241053258287,"mExtras":{"mAllowFds":true,"mFdsKnown":true,"mHasFds":false,"mParcelledData":{"mNativePtr":-1198028888,"mOwnsNativeParcelObject":true}},"mHasAccuracy":true,"mHasAltitude":true,"mHasBearing":false,"mHasSpeed":true,"mInitialBearing":0,"mIsFromMockProvider":false,"mLat1":0,"mLat2":0,"mLatitude":34.16907969,"mLon1":0,"mLon2":0,"mLongitude":-1188.13232889,"mProvider":"gps","mResults":[0,0],"mSpeed":0,"mTime":1513293334000}'
       network_state='{"network_type":"MOBILE","system_timestamp_millis":1513293334619}'
 
 
-      ping='{"host":"8.8.8.8","net":"MOBILE","output":"PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=56 time=76.0 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=56 time=74.4 ms\n\n--- 8.8.8.8 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min\/avg\/max\/mdev = 74.404\/75.250\/76.097\/0.889 ms\n","ping_start_timestamp":1513293334653,"pinged":true}
-      PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-      64 bytes from 8.8.8.8: icmp_seq=1 ttl=56 time=76.0 ms
-      64 bytes from 8.8.8.8: icmp_seq=2 ttl=56 time=74.4 ms
+      ping='{"host":"8.8.8.8","net":"MOBILE","output":"PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=56 time=76.0 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=56 time=74.4 ms\n\n--- 8.8.8.8 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1001ms\nrtt min\/avg\/max\/mdev = 74.404\/75.250\/76.097\/0.889 ms\n","ping_start_timestamp":1513293334653,"pinged":true}'
       
-      --- 8.8.8.8 ping statistics ---
-      2 packets transmitted, 2 received, 0% packet loss, time 1001ms
-      rtt min/avg/max/mdev = 74.404/75.250/76.097/0.889 ms'
       device_id="1234"
       line1number="1234"
       
