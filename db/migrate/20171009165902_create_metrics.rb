@@ -22,16 +22,16 @@ class CreateMetrics < ActiveRecord::Migration[5.1]
       t.belongs_to :ingested_datum
       t.timestamps
       
-      t.index [:metric_id, :location_id]
-      t.index [:metric_id, :ping_id]
-      t.index [:metric_id, :report_id]
-      t.index [:metric_id, :network_state_id]
-      t.index [:metric_id, :ingested_datum_id]
-      t.index [:metric_id, :cell_identity_lte_id]
-      t.index [:metric_id, :cell_identity_cdma_id]
-      t.index [:metric_id, :cell_identity_gsm_id]
-      t.index [:metric_id, :cell_identity_wcdma_id]
-      t.index [:metric_id, :cell_info_id]
+      add_index :metrics, :network_state
+      add_index :metrics, :location
+      add_index :metrics, :ping
+      add_index :metrics, :report
+      add_index :metrics, :cell_identity_lte
+      add_index :metrics, :cell_identity_cdma
+      add_index :metrics, :cell_identity_wcdma
+      add_index :metrics, :cell_identity_gsm
+      add_index :metrics, :cell_info
+      add_index :metrics, :ingested_datum
       
     end
   end
