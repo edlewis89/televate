@@ -21,8 +21,8 @@ class CreateMetrics < ActiveRecord::Migration[5.1]
       t.belongs_to :cell_info
       t.belongs_to :ingested_datum
       t.timestamps
-      
      
+       
       
     end
   end

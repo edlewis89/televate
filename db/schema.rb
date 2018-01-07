@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171201223050) do
+ActiveRecord::Schema.define(version: 20180107132520) do
 
   create_table "cdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "mbasestationid"
@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 20171201223050) do
   create_table "cells_metrics", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "cell_id", null: false
     t.bigint "metric_id", null: false
+    t.index ["cell_id", "metric_id"], name: "index_cells_metrics_on_cell_id_and_metric_id"
+    t.index ["metric_id", "cell_id"], name: "index_cells_metrics_on_metric_id_and_cell_id"
   end
 
   create_table "gsm_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -84,8 +86,8 @@ ActiveRecord::Schema.define(version: 20171201223050) do
     t.integer "mdistance"
     t.integer "mspeed"
     t.decimal "mbearing", precision: 6, scale: 2
-    t.decimal "mlongitude", precision: 15, scale: 13
-    t.decimal "mlatitude", precision: 15, scale: 13
+    t.decimal "mlongitude", precision: 15, scale: 10
+    t.decimal "mlatitude", precision: 15, scale: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["metric_id"], name: "index_locations_on_metric_id", unique: true
@@ -137,10 +139,10 @@ ActiveRecord::Schema.define(version: 20171201223050) do
     t.index ["cell_identity_wcdma_id"], name: "index_metrics_on_cell_identity_wcdma_id"
     t.index ["cell_info_id"], name: "index_metrics_on_cell_info_id"
     t.index ["ingested_datum_id"], name: "index_metrics_on_ingested_datum_id"
-    t.index ["location_id"], name: "index_metrics_on_location_id", unique: true
-    t.index ["network_state_id"], name: "index_metrics_on_network_state_id", unique: true
-    t.index ["ping_id"], name: "index_metrics_on_ping_id", unique: true
-    t.index ["report_id"], name: "index_metrics_on_report_id", unique: true
+    t.index ["location_id"], name: "index_metrics_on_location_id"
+    t.index ["network_state_id"], name: "index_metrics_on_network_state_id"
+    t.index ["ping_id"], name: "index_metrics_on_ping_id"
+    t.index ["report_id"], name: "index_metrics_on_report_id"
   end
 
   create_table "metrics_wcdma_identities", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
