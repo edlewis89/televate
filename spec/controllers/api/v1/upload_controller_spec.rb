@@ -343,7 +343,7 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
   end
   
   
-  describe "should create location, net, ping " do
+  describe "when cell info is not available" do
     
      let(:report){{report_type:"Report",event_type:"", drive_mode:"Auto"}}
      #let(:cellinfo){[{mCellIdentityLte:{mCi:30025238,mEarfcn:0,mMcc:311,mMnc:480,mPci:271,mTac:29952},mCellSignalStrengthLte:{mCqi:2147483647,mRsrp:-90,mRsrq:-9,mRssnr:2147483647,mSignalStrength:26,mTimingAdvance:4},mRegistered:true,mTimeStamp:183467365739448,mTimeStampType:3},{mCellIdentityLte:{mCi:2147483647,mEarfcn:0,mMcc:2147483647,mMnc:2147483647,mPci:195,mTac:2147483647},mCellSignalStrengthLte:{mCqi:2147483647,mRsrp:-96,mRsrq:-13,mRssnr:2147483647,mSignalStrength:20,mTimingAdvance:4},mRegistered:false,mTimeStamp:183467365739448,mTimeStampType:3},{mCellIdentityLte:{mCi:2147483647,mEarfcn:0,mMcc:2147483647,mMnc:2147483647,mPci:107,mTac:2147483647},mCellSignalStrengthLte:{mCqi:2147483647,mRsrp:-103,mRsrq:-19,mRssnr:2147483647,mSignalStrength:20,mTimingAdvance:4},mRegistered:false,mTimeStamp:183467365739448,mTimeStampType:3}]}
@@ -360,7 +360,7 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
     let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :location=>location.to_json, :cellinfo=>{}.to_json, :ping=>ping.to_json, :network_state=>network_state.to_json, :report_type=>report.to_json}}    
    
   
-    it "should create a report type" do 
+    it "should create a netstate, ping, location and report type" do 
       post :create, params: json        
       c = Cell.where(:cell_device_id => '355300071073642').first
       expect(c.metrics.count).to eq 1
