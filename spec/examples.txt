@@ -1,17 +1,18 @@
-example_id                                                 | status  | run_time        |
----------------------------------------------------------- | ------- | --------------- |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:1:1] | passed  | 0.00569 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:1:2] | passed  | 0.02352 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:1:3] | passed  | 0.03985 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:1:4] | passed  | 0.22804 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:2:1] | passed  | 0.0978 seconds  |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:2:2] | passed  | 0.07587 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:3:1] | passed  | 0.1098 seconds  |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:4:1] | passed  | 0.11716 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:5:1] | passed  | 0.10191 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:5:2] | passed  | 0.07357 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:6:1] | passed  | 0.05791 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:7:1] | passed  | 0.06206 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:8:1] | passed  | 0.44612 seconds |
-./spec/controllers/api/v1/upload_controller_spec.rb[1:9:1] | passed  | 0.12204 seconds |
-./spec/models/report_spec.rb[1:1]                          | pending | 0.00002 seconds |
+example_id                                                  | status  | run_time        |
+----------------------------------------------------------- | ------- | --------------- |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:1]  | passed  | 0.0072 seconds  |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:2]  | passed  | 0.00442 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:3]  | passed  | 0.25823 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:1:4]  | passed  | 0.03962 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:2:1]  | passed  | 0.07873 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:2:2]  | passed  | 0.07395 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:3:1]  | passed  | 0.08893 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:4:1]  | passed  | 0.06033 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:5:1]  | passed  | 0.07208 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:5:2]  | passed  | 0.07208 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:6:1]  | passed  | 0.08141 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:7:1]  | passed  | 0.15307 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:8:1]  | passed  | 0.50652 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:9:1]  | passed  | 0.08239 seconds |
+./spec/controllers/api/v1/upload_controller_spec.rb[1:10:1] | passed  | 0.04799 seconds |
+./spec/models/report_spec.rb[1:1]                           | pending | 0.00003 seconds |

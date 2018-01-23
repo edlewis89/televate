@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180107132520) do
+ActiveRecord::Schema.define(version: 20180107195422) do
 
   create_table "cdma_identities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "mbasestationid"
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20180107132520) do
     t.decimal "mlatitude", precision: 15, scale: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "mprovider"
     t.index ["metric_id"], name: "index_locations_on_metric_id", unique: true
   end
 

@@ -343,6 +343,34 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
   end
   
   
+  describe "should create location, net, ping " do
+    
+     let(:report){{report_type:"Report",event_type:"", drive_mode:"Auto"}}
+     #let(:cellinfo){[{mCellIdentityLte:{mCi:30025238,mEarfcn:0,mMcc:311,mMnc:480,mPci:271,mTac:29952},mCellSignalStrengthLte:{mCqi:2147483647,mRsrp:-90,mRsrq:-9,mRssnr:2147483647,mSignalStrength:26,mTimingAdvance:4},mRegistered:true,mTimeStamp:183467365739448,mTimeStampType:3},{mCellIdentityLte:{mCi:2147483647,mEarfcn:0,mMcc:2147483647,mMnc:2147483647,mPci:195,mTac:2147483647},mCellSignalStrengthLte:{mCqi:2147483647,mRsrp:-96,mRsrq:-13,mRssnr:2147483647,mSignalStrength:20,mTimingAdvance:4},mRegistered:false,mTimeStamp:183467365739448,mTimeStampType:3},{mCellIdentityLte:{mCi:2147483647,mEarfcn:0,mMcc:2147483647,mMnc:2147483647,mPci:107,mTac:2147483647},mCellSignalStrengthLte:{mCqi:2147483647,mRsrp:-103,mRsrq:-19,mRssnr:2147483647,mSignalStrength:20,mTimingAdvance:4},mRegistered:false,mTimeStamp:183467365739448,mTimeStampType:3}]}
+     let(:ping){{host:"8.8.8.8",net:"MOBILE",output:"PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=54 time=30.5 ms\\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=54 time=28.7 ms\\n\\n--- 8.8.8.8 ping statistics ---\\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\\nrtt min/avg/max/mdev \\u003d 28.726/29.644/30.562/0.918 ms\\n",ping_start_timestamp:1510064393916,pinged:true}}     
+     let(:network_state){{network_type:"MOBILE",system_timestamp_millis:1510064393899}}
+     let(:location) {{mAccuracy:329.189,mAltitude:133.0,mBearing:110.00,mElapsedRealtimeNanos:96183916307734,mExtras:{mFlags:1537,mParcelledData:{mNativePtr:540096934048,mNativeSize:0,mOwnsNativeParcelObject:true}},mFieldsMask:11,mLatitude:38.91507764,mLongitude:-77.23140876,mProvider:"gps",mSpeed:0.0,mTime:1510064183000}}
+     let(:line1number){'7034051467'}
+     let(:device_id) {'355300071073642'}
+    
+      
+    
+   
+    #let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :location=>location.to_json, :cellinfo=>cellinfo.to_json, :ping=>ping.to_json, :network_state=>network_state.to_json, :report_type=>report.to_json}}    
+    let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :location=>location.to_json, :cellinfo=>{}.to_json, :ping=>ping.to_json, :network_state=>network_state.to_json, :report_type=>report.to_json}}    
+   
+  
+    it "should create a report type" do 
+      post :create, params: json        
+      c = Cell.where(:cell_device_id => '355300071073642').first
+      expect(c.metrics.count).to eq 1
+      expect(c.metrics[0].report.event_type).to eq ""
+    end
+   
+  end
+  
+  
+  
   
   
 end
