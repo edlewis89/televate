@@ -114,7 +114,7 @@ class API::V1::UploadController < ApplicationController
     #  UPDATE
     #
     ####################################################  
-    c.with_lock do
+    #c.with_lock do
       #if !dsl.cell_info_object.nil? && !dsl.cell_info_object.empty?    
           Rails.logger.info "...Updating Cell Object #{c.cell_device_id}"
           ####################################################
@@ -348,7 +348,7 @@ class API::V1::UploadController < ApplicationController
           #puts "no cell info object to update"
           #return true
        #end
-    end # with_lock
+    #end # with_lock
   end
   
   def insert_cell_info(dsl)
@@ -357,7 +357,7 @@ class API::V1::UploadController < ApplicationController
     #
     ####################################################  
         c = Cell.new({:cell_device_id => dsl.device_id})
-        c.with_lock do
+        #c.with_lock do
           if c.valid? #&& dsl.cell_info_object && !dsl.cell_info_object.empty?
             c.line1number = dsl.line1number if dsl.line1number
             Rails.logger.info "...Initialized Cell Object #{c.cell_device_id}"
@@ -629,7 +629,7 @@ class API::V1::UploadController < ApplicationController
         else
           return false      
         end #c.valid?
-      end  #with_lock      
+      #end  #with_lock      
   end
   
   def success_upload(conditions)

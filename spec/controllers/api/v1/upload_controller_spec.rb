@@ -353,13 +353,10 @@ RSpec.describe API::V1::UploadController, :type => :controller  do
      let(:line1number){'7034051467'}
      let(:device_id) {'355300071073642'}
     
-      
-    
    
     #let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :location=>location.to_json, :cellinfo=>cellinfo.to_json, :ping=>ping.to_json, :network_state=>network_state.to_json, :report_type=>report.to_json}}    
     let(:json){{:format => 'json', :device_id => device_id, :line1number=>line1number, :location=>location.to_json, :cellinfo=>{}.to_json, :ping=>ping.to_json, :network_state=>network_state.to_json, :report_type=>report.to_json}}    
    
-  
     it "should create a netstate, ping, location and report type" do 
       post :create, params: json        
       c = Cell.where(:cell_device_id => '355300071073642').first
